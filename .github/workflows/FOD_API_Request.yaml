@@ -14,8 +14,8 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up Fortify On Demand API request
-      uses: fjogeleit/http-request-action@v1
+      uses: boro2g/http-request-action@v1.0.2
       with:
-        url: ${{ secrets.FOD_TENANT_ID }}
+        url: ${{ secrets.FOD_API_URL }}
         method: 'GET'
         headers: '{"Content-Type": "application/json", "Authorization": "Bearer ${{ secrets.FOD_BEARER_TOKEN }}"}'
