@@ -24,7 +24,7 @@ jobs:
           echo "Repository Name: ${Repo_Name}
           
           # Replace the following curl command with the actual Fortify on Demand API endpoint
-          curl -X GET "${FOD_API_URL}/applications/applications?filters=applicationName%3A${Repo_Name}" \
+          curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
             -H "Authorization: Bearer ${FOD_API_TOKEN}" \
             -H "Accept: application/json" \
             -o "application-output.json"  # Save the response to a file, adjust as needed
