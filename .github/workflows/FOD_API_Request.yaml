@@ -18,13 +18,17 @@ jobs:
           # Set your Fortify on Demand API details
           FOD_API_URL="${{ secrets.FOD_API_URL }}"
           FOD_API_TOKEN="${{ secrets.FOD_BEARER_TOKEN }}"
+          Repo_Name="${{ steps.repo_name.outputs.name }}"
 
+          #Prints the repositoryname
+          echo "Repository Name: ${Repo_Name}
+          
           # Replace the following curl command with the actual Fortify on Demand API endpoint
-          curl -X GET "${FOD_API_URL}/applications" \
+          curl -X GET "${FOD_API_URL}/applications/applications?filters=applicationName%3A${Repo_Name}" \
             -H "Authorization: Bearer ${FOD_API_TOKEN}" \
             -H "Accept: application/json" \
-            -o "applications.json"  # Save the response to a file, adjust as needed
+            -o "application-output.json"  # Save the response to a file, adjust as needed
           
-          # Print the response (optional)
-          echo "API response saved to applications.json. Showing all results from the query"
-          cat applications.json
+          # Prints the response (optional)
+          echo "API response saved to a JSON file. Showing all results from the query:"
+          cat application-output.json
