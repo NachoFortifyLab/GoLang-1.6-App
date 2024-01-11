@@ -34,10 +34,13 @@ jobs:
           echo "API response saved to a JSON file. Showing all results from the query:"
           jq . application-output.json
 
-    - name: Check API Response
+    - name: Check FOD API Response
       run: |
           # Extract the HTTP status code from the response
           HTTP_STATUS=$(tail -c 3 application-output.json)
+
+          # Prints the status code
+          echo "HTTP_STATUS"
 
           # Check if the status code is 200
           if [ "$HTTP_STATUS" == "200" ]; then
