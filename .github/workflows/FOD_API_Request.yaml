@@ -1,6 +1,7 @@
 name: Fortify On Demand API Request
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
