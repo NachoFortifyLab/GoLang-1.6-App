@@ -23,3 +23,7 @@ jobs:
           curl -X GET "${FOD_API_URL}/applications" \
             -H "Authorization: Bearer ${FOD_API_TOKEN}" \
             -H "Content-Type: application/json"
+            -o applications.json  # Save the response to a file, adjust as needed
+          
+          # Print the response (optional)
+          cat applications.json
