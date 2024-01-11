@@ -19,7 +19,7 @@ jobs:
           # Set your Fortify on Demand API details
           FOD_API_URL="${{ secrets.FOD_API_URL }}"
           FOD_API_TOKEN="${{ secrets.FOD_BEARER_TOKEN }}"
-          Repo_Name="${{ steps.repo_name.outputs.name }}"
+          Repo_Name="${{ github.event.repository.name }}"
 
           #Prints the repository name
           echo "Repository Name: ${Repo_Name}"
