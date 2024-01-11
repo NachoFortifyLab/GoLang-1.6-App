@@ -13,13 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Retrieve Fortify On Demand Applications
-      uses: boro2g/http-request-action@v1.0.2
-      with:
-          url: '${{ secrets.FOD_API_URL }}/applications'
-          method: GET
-          headers: |
-            {
-              "Authorization": "Bearer ${{ secrets.FOD_BEARER_TOKEN }}",
-              "Content-Type": "application/json"
-            }
+    - name: Retrieve Fortify On Demand Application
+      run: |
+          # Set your Fortify on Demand API details
+          FOD_API_URL="${{ secrets.FOD_API_URL }}"
+          FOD_API_TOKEN="${{ secrets.FOD_BEARER_TOKEN }}"
+
+          # Replace the following curl command with the actual Fortify on Demand API endpoint
+          curl -X GET "${FOD_API_URL}/applications" \
+            -H "Authorization: Bearer ${FOD_API_TOKEN}" \
+            -H "Content-Type: application/json"
