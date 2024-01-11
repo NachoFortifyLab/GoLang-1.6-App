@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  get-fod-applications:
+  get-fod-application-by-name:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,6 +31,8 @@ jobs:
            -o "application-output.json" # Save the response to a file, adjust as needed
           
           # Parses and Prints the response
-          jq . application-output.json
           echo "API response saved to a JSON file. Showing all results from the query:"
-          cat application-output.json
+          jq . application-output.json
+
+          
+         
