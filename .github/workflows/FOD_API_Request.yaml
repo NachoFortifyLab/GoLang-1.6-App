@@ -40,10 +40,10 @@ jobs:
           HTTP_STATUS=$(tail -c 3 application-output.json)
 
           # Prints the status code
-          echo "HTTP_STATUS"
+          echo "${HTTP_STATUS}"
 
           # Check if the status code is 200
-          if [ "$HTTP_STATUS" == "200" ]; then
+          if [ "${HTTP_STATUS}" == "200" ]; then
             echo "API request was successful."
           else
             echo "API request failed with status code: $HTTP_STATUS"
