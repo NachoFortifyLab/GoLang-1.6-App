@@ -26,4 +26,5 @@ jobs:
             -o "applications.json"  # Save the response to a file, adjust as needed
           
           # Print the response (optional)
+          echo "API response saved to applications.json. Showing all results from the query"
           cat applications.json
