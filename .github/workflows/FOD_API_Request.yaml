@@ -28,7 +28,7 @@ jobs:
           curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name})" \
            -H "Authorization: Bearer ${FOD_API_TOKEN}" \
            -H "Accept: application/json" \
-           -W "%{http_code}" \
+           -w "%{http_code}" \
            -o "application-output.json" # Save the response to a file, adjust as needed
           
           # Parses and Prints the response
