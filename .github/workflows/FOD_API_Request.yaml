@@ -25,32 +25,14 @@ jobs:
           echo "Repository Name: ${Repo_Name}"
           
           # Checks if an application exisits in Fortify On Demand Tenant and extracts the HTTP status code from the response 
-          HTTP_STATUS=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
+          curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
            -H "Authorization: Bearer ${FOD_API_TOKEN}" \
            -H "Accept: application/json" \
            -w "%{http_code}" \
-           -o "application-output.json") # Save the results of the query to a file
+           -o "application-output.json" # Save the results of the query to a file
           
           # Parses and Prints the response
           echo "API response saved to a JSON file. Showing all results from the query:"
           jq . application-output.json
 
-          echo "::set-output name=http_status::$HTTP_STATUS"
-          
-    - name: Check API Response
-      run: |
-         # Gets the HTTP status code from the previous step's output
-          HTTP_STATUS="${{ needs.api_request.outputs.http_status }}"
-         
-         # Prints the status code
-          echo "${HTTP_STATUS}"
-
-          # Check if the status code is 200
-          if [ "${HTTP_STATUS}" = "200" ]
-          then
-            echo "API request was successful."
-          else
-            echo "API request failed with status code: $HTTP_STATUS"
-            exit 1  # Exit with a non-zero status code to indicate failure
-          fi
          
