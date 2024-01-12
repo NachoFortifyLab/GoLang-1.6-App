@@ -25,9 +25,10 @@ jobs:
           echo "Repository Name: ${Repo_Name}"
           
           # Checks if an application exisits in Fortify On Demand Tenant and extracts the HTTP status code from the response 
-          curl -W "%{http_code}" -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name})" \
+          curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name})" \
            -H "Authorization: Bearer ${FOD_API_TOKEN}" \
            -H "Accept: application/json" \
+           -W %{http_code}" \
            -O "application-output.json" # Save the response to a file, adjust as needed
           
           # Parses and Prints the response
