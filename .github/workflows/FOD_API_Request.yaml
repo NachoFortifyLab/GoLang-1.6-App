@@ -30,9 +30,19 @@ jobs:
            -H "Accept: application/json" \
            -w "%{http_code}" \
            -o "application-output.json" # Save the response to a file, adjust as needed
+          echo ""
           
           # Parses and Prints the response
           echo "API response saved to a JSON file. Showing all results from the query:"
           jq . application-output.json
-          
+
+          echo "::set-output name=http_status::$HTTP_STATUS"
+
+    - name: Check API Response
+      run: |
+          # Get the HTTP status code from the previous step's output
+          HTTP_STATUS="${{ steps.api_request.outputs.http_status }}"
+
+          # Print the HTTP status code
+          echo "HTTP Status Code: $HTTP_STATUS"
          
