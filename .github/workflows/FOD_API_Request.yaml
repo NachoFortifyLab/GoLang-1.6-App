@@ -29,7 +29,7 @@ jobs:
            -H "Authorization: Bearer ${FOD_API_TOKEN}" \
            -H "Accept: application/json" \
            -w "%{http_code}" \
-           -o "application-output.json" # Save the results of the query to a file
+           -o "application-output.json") # Save the results of the query to a file
           echo ""
           
           # Parses and Prints the response
