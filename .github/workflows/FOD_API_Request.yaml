@@ -43,7 +43,7 @@ jobs:
     - name: Check FOD API Response
       run: |
           # Check if the status code is 200
-          if [ "${Request_Status_Code}" -eq 200 ] 
+          if [ "${Request_Status_Code}" = "200" ] 
           then
             echo "API request was successful."
           else
