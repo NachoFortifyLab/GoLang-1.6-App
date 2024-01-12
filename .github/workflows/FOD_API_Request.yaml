@@ -43,9 +43,9 @@ jobs:
     - name: Check FOD API Response
       run: |
           # Check if the status code is 200
-          if [ ! ${Request_Status_Code} -eq 200 ]; then
-            echo "API request failed with status code: $HTTP_STATUS"
-            exit 1  # Exit with a non-zero status code to indicate failure
+          if [ ! $HTTP_STATUS -eq 200  ]; then
+            echo "Error [HTTP status: $HTTP_STATUS]"
+            exit 1
           else
-           echo "API request was successful."
+            echo "API request was successful."
           fi
