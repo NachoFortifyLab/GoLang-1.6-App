@@ -28,16 +28,14 @@ jobs:
           Get_FOD_Application_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
            -H "Authorization: Bearer ${FOD_API_TOKEN}" \
            -H "Accept: application/json" \
-           --write-out "%{http_code}" \
+           -w "%{http_code}" \
            -o "application-output.json") # Save the results of the query to a file
 
            Request_Status_Code=$(echo $Get_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+           
+           # Prints the status code
+           echo "Request satus code: ${Request_Status_Code}"
           
           # Parses and Prints the response
           echo "API response saved to a JSON file. Showing all results from the query:"
           jq . application-output.json
-
-    - name: Check FOD API Response
-      run: |
-          # Prints the status code
-          echo "$Request_Status_Code"
