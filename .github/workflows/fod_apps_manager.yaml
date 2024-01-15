@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  get-fod-application-by-name:
+  fod-application-management:
     runs-on: ubuntu-latest
 
     steps:
@@ -45,15 +45,15 @@ jobs:
           ITEMS=$(cat "application-output.json" | jq -r '.items')
           TOTALCOUNT=$(cat "application-output.json" | jq -r '.totalCount')
 
-          echo "${ITEMS}"
-          echo "${TOTALCOUNT}"
-
           # Checks if the status code of the request is 200 if not it will end the workflow with an error
           if [[ $Request_Status_Code -eq 200 ]]; then
             echo "API Request was successful."
             
             if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
               echo "Application ${Repo_Name} is not found in Foritfy On Demand"
+
+              
+              
             else
               echo "Application ${Repo_Name} is present in Fortify On Demand"
             fi
