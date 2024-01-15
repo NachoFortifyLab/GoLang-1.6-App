@@ -42,8 +42,10 @@ jobs:
           jq . application-output.json
 
           # Extracts specific values from the output JSON file
+          ITEMS=$(cat "application-output.json" | jq -r '.items')
           TOTALCOUNT=$(cat "application-output.json" | jq -r '.totalCount')
 
+          echo "${ITEMS}"
           echo "${TOTALCOUNT}"
 
           # Checks if the status code of the request is 200 if not it will end the workflow with an error
