@@ -41,11 +41,7 @@ jobs:
           echo "API Request response saved to a JSON file. Showing all results from the query:"
           jq . application-output.json
 
-          # Extracts specific values from the output JSON file
-          TOTALCOUNT=$(echo "application-output.json" | jq -r '.totalCount')
-
-          echo "${TOTALCOUNT}"
-
+        
           # Checks if the status code of the request is 200 if not it will end the workflow with an error
           if [[ $Request_Status_Code -eq 200 ]]; then
             echo "API Request was successful."
