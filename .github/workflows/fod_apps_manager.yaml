@@ -14,37 +14,46 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Checks application existance in FOD and creates it if not exist in the Tenant
+    - name: Checks an application existance in FOD and Creates it if not exist in the Tenant
       run: |
           # Sets up your Fortify on Demand API and Github requiered variables
           FOD_API_URL="${{ secrets.FOD_API_URL }}"
           FOD_API_TOKEN="${{ secrets.FOD_BEARER_TOKEN }}"
           Repo_Name="${{ github.event.repository.name }}"
 
-          #Prints the repository name
-          echo "Repository Name: ${Repo_Name}"
+          # Gets and Prints the repository name
+          echo "The Repository is: ${Repo_Name}"
           
-          # Checks if an application exisits in Fortify On Demand Tenant and extracts the HTTP status code from the response 
-          Get_FOD_Application_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
-           -H "Authorization: Bearer ${FOD_API_TOKEN}" \
-           -H "Accept: application/json" \
-           -w "%{http_code}" \
-           -o "application-output.json") # Save the results of the query to a file
+          # Sends an API Request with GET method to retrieve an application existance by name using the repository name on the tenant from the token used and extracts the HTTP status code from the response
+          Get_FOD_Application_by_Name_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
+           -H "Authorization: Bearer ${FOD_API_TOKEN}" \ # FOD Token
+           -H "Accept: application/json" \ # Content display type of the request
+           -w "%{http_code}" \ # HTTP status code
+           -o "application-output.json") # Saves the results of the query to a file
            
-           # Saves the request's status code
-           Request_Status_Code=$(echo $Get_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+          # Saves the request's status code
+          Request_Status_Code=$(echo $Get_FOD_Application_by_Name_Request | tr -d '\n' | sed -e 's/.*Status Code://')
            
-           # Prints the status code
-           echo "Request satus code: ${Request_Status_Code}"
+          # Prints the status code
+          echo "Status code from the api request: ${Request_Status_Code}"
           
-          # Parses and Prints the response
-          echo "API response saved to a JSON file. Showing all results from the query:"
+          # Parses and Prints the response of the request
+          echo "API Request response saved to a JSON file. Showing all results from the query:"
           jq . application-output.json
 
-           # Check if the status code is 200
+          # Extracts specific values from the output JSON file
+          TOTALCOUNT=$(echo "application-output.json" | jq -r '.totalCount')
+
+          echo "${TOTALCOUNT}"
+
+          # Checks if the status code of the request is 200 if not it will end the workflow with an error
           if [[ $Request_Status_Code -eq 200 ]]; then
-            echo "API request was successful."
+            echo "API Request was successful."
+
+            
+            
           else
-            echo "Error [HTTP status: $ $Request_Status_Code]"
-            exit 1
+            echo "API request failed. FOD API server is down or your Token has expired"
+            echo "Status code from the api request: ${Request_Status_Code}"
+            exit 1  # Exit with a non-zero status code to indicate failure
           fi
