@@ -52,7 +52,7 @@ jobs:
           if [[ $Request_Status_Code -eq 200 ]]; then
             echo "API Request was successful."
             
-            if [[ $ITEMS = [] ]]; then
+            if [[ $TOTALCOUNT -eq 0 ]]; then
               echo "Application ${Repo_Name} is not found in Foritfy On Demand"
             else
               echo "Application ${Repo_Name} is present in Fortify On Demand"
