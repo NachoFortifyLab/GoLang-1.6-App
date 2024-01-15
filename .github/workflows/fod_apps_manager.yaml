@@ -55,7 +55,8 @@ jobs:
             if [[ -z $ITEMS ]]; then
               echo "Application ${Repo_Name} is not found in Foritfy On Demand"
             else
-              echo "Application ${Repo_Name}" is present in Fortify On Demand"  
+              echo "Application ${Repo_Name}" is present in Fortify On Demand"
+            fi
           else
             echo "API request failed. FOD API server is down or your Token has expired"
             echo "Status code from the api request: ${Request_Status_Code}"
