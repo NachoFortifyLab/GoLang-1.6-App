@@ -1,4 +1,4 @@
-name: Fortify On Demand API Request
+name: Fortify On Demand Application Manager
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Retrieve Fortify On Demand Application by Name
+    - name: Checks application existance in FOD and creates it if not exist in the Tenant
       run: |
           # Sets up your Fortify on Demand API and Github requiered variables
           FOD_API_URL="${{ secrets.FOD_API_URL }}"
@@ -30,7 +30,8 @@ jobs:
            -H "Accept: application/json" \
            -w "%{http_code}" \
            -o "application-output.json") # Save the results of the query to a file
-
+           
+           # Saves the request's status code
            Request_Status_Code=$(echo $Get_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
            
            # Prints the status code
@@ -40,12 +41,7 @@ jobs:
           echo "API response saved to a JSON file. Showing all results from the query:"
           jq . application-output.json
 
-    - name: Check FOD API Response
-      run: |
-          # Prints the status code
-          echo "Request satus code: ${Request_Status_Code}"
-           
-          # Check if the status code is 200
+           # Check if the status code is 200
           if [[ $Request_Status_Code -eq 200 ]]; then
             echo "API request was successful."
           else
