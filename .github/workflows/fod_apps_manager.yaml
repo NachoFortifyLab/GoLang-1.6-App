@@ -42,7 +42,7 @@ jobs:
           jq . application-output.json
 
           # Extracts specific values from the output JSON file
-          TOTALCOUNT=$(echo "application-output.json" | jq -r '.totalCount')
+          TOTALCOUNT=$(cat "application-output.json" | jq -r '.totalCount')
 
           echo "${TOTALCOUNT}"
 
