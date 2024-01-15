@@ -25,14 +25,14 @@ jobs:
           echo "The Repository is: ${Repo_Name}"
           
           # Sends an API Request with GET method to retrieve an application existance by name using the repository name and extracts the HTTP status code from the response
-          Get_FOD_Application_by_Name_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
+          Get_FOD_Application_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
            -H "Authorization: Bearer ${FOD_API_TOKEN}" \ 
            -H "Accept: application/json" \ 
            -w "%{http_code}" \ 
            -o "application-output.json") # Saves the results of the query to a file
            
           # Saves the request's status code
-          Request_Status_Code=$(echo $Get_FOD_Application_by_Name_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+          Request_Status_Code=$(echo $Get_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
            
           # Prints the status code
           echo "Status code from the api request: ${Request_Status_Code}"
