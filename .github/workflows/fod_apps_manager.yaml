@@ -51,11 +51,11 @@ jobs:
           # Checks if the status code of the request is 200 if not it will end the workflow with an error
           if [[ $Request_Status_Code -eq 200 ]]; then
             echo "API Request was successful."
-
+            
             if [[ -z $ITEMS ]]; then
               echo "Application ${Repo_Name} is not found in Foritfy On Demand"
             else
-              echo "Application ${Repo_Name}" is present in Fortify On Demand"
+              echo "Application ${Repo_Name} is present in Fortify On Demand"
             fi
           else
             echo "API request failed. FOD API server is down or your Token has expired"
