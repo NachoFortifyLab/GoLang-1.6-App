@@ -24,7 +24,7 @@ jobs:
           # Gets and Prints the repository name
           echo "The Repository is: ${Repo_Name}"
           
-          # Sends an API Request with GET method to retrieve an application existance by name using the repository name on the tenant from the token used and extracts the HTTP status code from the response
+          # Sends an API Request with GET method to retrieve an application existance by name using the repository name and extracts the HTTP status code from the response
           Get_FOD_Application_by_Name_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
            -H "Authorization: Bearer ${FOD_API_TOKEN}" \ 
            -H "Accept: application/json" \ 
@@ -41,7 +41,10 @@ jobs:
           echo "API Request response saved to a JSON file. Showing all results from the query:"
           jq . application-output.json
 
-          
+          # Extracts specific values from the output JSON file
+          TOTALCOUNT=$(echo "application-output.json" | jq -r '.totalCount')
+
+          echo "${TOTALCOUNT}"
 
           # Checks if the status code of the request is 200 if not it will end the workflow with an error
           if [[ $Request_Status_Code -eq 200 ]]; then
