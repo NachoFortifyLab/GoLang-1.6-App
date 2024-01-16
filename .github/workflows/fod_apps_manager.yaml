@@ -69,7 +69,7 @@ jobs:
           # Saves the GET request's status code
           Get_Request_Status_Code=$(echo $Get_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
            
-          # Prints the status code of the Request
+          # Prints the status code of the GET Request
           echo "Status code from the request of getting FOD application: ${Get_Request_Status_Code}"
           
           # Prints the response of the GET Request as a parsed JSON
@@ -99,18 +99,27 @@ jobs:
               # Saves the POST request's status code
               Create_Request_Status_Code=$(echo $Create_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
            
-              # Prints the status code of the Request
+              # Prints the status code of the POST Request
               echo "Status code from the request of creation a FOD application: ${Create_Request_Status_Code}"
-          
-              # Parses and Prints the response of the request
-              echo "API Request response saved to a JSON file. Showing all results from the query:"
-              jq . create-application-output.json
-              echo "Your application ${Repo_Name} has been created in your Fortify On Demand Tenant"
+
+              if [[ $Create_Request_Status_Code -eq 201 ]]; then
+                echo "Your application ${Repo_Name} has been created in your Fortify On Demand Tenant"
+                
+                # Prints the response of the POST Request as a parsed JSON (Good One)
+                echo "API Request response saved to a JSON file. Showing all results from the query:"
+                jq . create-application-output.json
+              else
+                echo "API Request failed. FOD API server is down or your Token has expired or please check the POST Request"
+
+                # Prints the response of the POST Request as a parsed JSON (Bad One)
+                echo "API Request response, please check the errors and fix the issue:"
+                jq . create-application-output.json
+              fi
             else
               echo "Application ${Repo_Name} is present in your Fortify On Demand Tenant"
             fi
           else
-            echo "API request failed. FOD API server is down or your Token has expired"
+            echo "API Request failed. FOD API server is down or your Token has expired"
             echo "Status code from the api request: ${Request_Status_Code}"
             exit 1  # Exit with a non-zero status code to indicate failure
           fi
