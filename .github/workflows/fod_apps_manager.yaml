@@ -37,11 +37,11 @@ jobs:
             "emailList": "$FOD_EMAIL",
             "ownerId": $FOD_USER_ID,
             "attributes": [
-               {
-                 "name": "App Lead",
-                 "id": 8170,
-                 "value": "$FOD_USER_ID"
-               }
+              {
+                "name": "App Lead",
+                "id": 8170,
+                "value": "$FOD_USER_ID"
+              }
            ],
            "businessCriticalityType": "High",
            "sdlcStatusType": "Production",
