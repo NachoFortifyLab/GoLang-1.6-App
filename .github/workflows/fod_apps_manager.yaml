@@ -61,8 +61,7 @@ jobs:
                 -H "Accept: application/json" \
                 -w "%{http_code}" \
                 -o "create-application-output.json"
-                -d @<(cat <<EOF
-                {
+                -d '{
                   "applicationName": "${Repo_Name}",
                    "applicationDescription": "Application created by fod_apps_manager GitHub workflow",
                    "applicationType": "Web_Thick_Client",
@@ -83,10 +82,7 @@ jobs:
                    "microservices": [],
                    "releaseMicroserviceName": null,
                    "userGroupIds": []
-                }
-                EOF
-                ) 
-                )
+                }';)
 
               # Saves the POST request's status code
               Create_Request_Status_Code=$(echo $Create_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
