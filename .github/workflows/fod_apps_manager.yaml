@@ -42,7 +42,7 @@ jobs:
                  "id": 8170,
                  "value": "${FOD_USER_ID}"
                }
-            ],
+           ],
            "businessCriticalityType": "High",
            "sdlcStatusType": "Production",
            "hasMicroservices": false,
