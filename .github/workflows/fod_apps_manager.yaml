@@ -84,7 +84,8 @@ jobs:
                    "releaseMicroserviceName": null,
                    "userGroupIds": []
                 }
-                EOF))
+                EOF) \
+                )
 
               # Saves the POST request's status code
               Create_Request_Status_Code=$(echo $Create_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
