@@ -92,6 +92,7 @@ jobs:
               Create_FOD_Application_Request=$(curl -X POST "${FOD_API_URL}/applications" \
                 -H "Authorization: Bearer ${FOD_API_TOKEN}" \
                 -H "Accept: application/json" \
+                -H "Content-Type: application/json" \
                 -w "%{http_code}" \
                 -o "create-application-output.json" \
                 -d @body.json)
