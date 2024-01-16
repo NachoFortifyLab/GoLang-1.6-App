@@ -32,7 +32,8 @@ jobs:
             "age": 30,
             "city": "Example City"
           }
-          EOF)
+          EOF
+          )
 
           # Echo JSON data to a file named data.json
           echo "$JSON_DATA" > data.json
