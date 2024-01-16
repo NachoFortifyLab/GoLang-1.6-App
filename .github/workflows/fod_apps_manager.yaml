@@ -38,7 +38,7 @@ jobs:
           echo "$JSON_DATA" > data.json
 
           # Display the content of the created JSON file
-          cat data.json
+          jq . data.json
           
           # Sends an API Request with GET method to retrieve an application existance by name and extracts the HTTP status code from the response
           Get_FOD_Application_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
