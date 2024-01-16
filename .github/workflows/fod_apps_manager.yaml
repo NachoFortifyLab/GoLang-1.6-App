@@ -54,6 +54,8 @@ jobs:
             # Checks if the API Request returns sth if not it will create the application and scan it
             if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
               echo "There isn't any Application called ${Repo_Name} found in your Fortify On Demand Tenant"
+
+              JSON_DATA='{"key1":"value1","key2":"value2"}'
               
               # Sends an API Request with POST Method to create an application with the Repository Name
               Create_FOD_Application_Request=$(curl -X POST "${FOD_API_URL}/applications" \
@@ -61,7 +63,7 @@ jobs:
                 -H "Accept: application/json" \
                 -w "%{http_code}" \
                 -o "create-application-output.json
-                -d "{"productId": 123456, "quantity": 100}"
+                -d "$JSON_DATA")
                 
               # Saves the POST request's status code
               Create_Request_Status_Code=$(echo $Create_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
