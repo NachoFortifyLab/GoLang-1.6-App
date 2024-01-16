@@ -55,7 +55,7 @@ jobs:
             if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
               echo "There isn't any Application called ${Repo_Name} found in your Fortify On Demand Tenant"
 
-              FOD_Application_Body=$(cat <<EOF
+              FOD_Application_Body=$(cat <<-EOF
               {
                 "applicationName": "$Repo_Name",
                 "applicationDescription": "Application created by fod_apps_manager GitHub workflow",
