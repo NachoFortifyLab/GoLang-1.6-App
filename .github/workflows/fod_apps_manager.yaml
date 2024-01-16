@@ -55,28 +55,31 @@ jobs:
             if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
               echo "There isn't any Application called ${Repo_Name} found in your Fortify On Demand Tenant"
 
-              FOD_Application_Body="{
-                \"applicationName\": \"$Repo_Name\",
-                \"applicationDescription\": \"Application created by fod_apps_manager GitHub workflow\",
-                \"applicationType\": \"Web_Thick_Client\",
-                \"releaseName\": \"1.0\",
-                \"releaseDescription\": null,
-                \"emailList\": \"$FOD_EMAIL\",
-                \"ownerId\": \"$FOD_USER_ID\",
-                \"attributes\": [
-                {
-                \"name\": \"App Lead\",
-                \"id\": 8170,
-                \"value\": \"$FOD_USER_ID\"
-                }
+              FOD_Application_Body=$(cat <<EOF
+              {
+                "applicationName": "$Repo_Name",
+                "applicationDescription": "Application created by fod_apps_manager GitHub workflow",
+                "applicationType": "Web_Thick_Client",
+                "releaseName": "1.0",
+                "releaseDescription": null,
+                "emailList": "$FOD_EMAIL",
+                "ownerId": "$FOD_USER_ID",
+                "attributes": [
+                  {
+                    "name": "App Lead",
+                    "id": 8170,
+                    "value": "$FOD_USER_ID"
+                  }
                 ],
-                \"businessCriticalityType\": \"High\",
-                \"sdlcStatusType\": \"Production\",
-                \"hasMicroservices\": false,
-                \"microservices\": [],
-                \"releaseMicroserviceName\": null,
-                \"userGroupIds\": []
-              }"
+                "businessCriticalityType": "High",
+                "sdlcStatusType": "Production",
+                "hasMicroservices": false,
+                "microservices": [],
+                "releaseMicroserviceName": null,
+                "userGroupIds": []
+              }
+              EOF
+              )
               echo "$FOD_Application_Body" > body.json
               
               # Sends an API Request with POST Method to create an application with the Repository Name
