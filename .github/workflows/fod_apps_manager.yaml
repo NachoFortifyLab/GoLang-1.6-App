@@ -84,7 +84,8 @@ jobs:
                    "releaseMicroserviceName": null,
                    "userGroupIds": []
                 }
-                EOF) \
+                EOF
+                ) 
                 )
 
               # Saves the POST request's status code
