@@ -26,7 +26,8 @@ jobs:
           # Prints the repository name
           echo "The Repository which triggered the workflow is: ${Repo_Name}"
 
-          JSON_DATA=$(cat <<EOF
+          # Creates a JSON file to be used as body for the Creation of the Applicaiton Request 
+          Create_FOD_Application_Body=$(cat <<EOF
           {
             "name": "John Doe",
             "age": 30,
@@ -36,9 +37,9 @@ jobs:
           )
 
           # Echo JSON data to a file named data.json
-          echo "$JSON_DATA" > data.json
+          echo "$Create_FOD_Application_Body" > body.json
 
-          # Display the content of the created JSON file
+          # Prints the parsed data of the JSON file that would be the body of the POST Request
           jq . data.json
           
           # Sends an API Request with GET method to retrieve an application existance by name and extracts the HTTP status code from the response
@@ -54,7 +55,7 @@ jobs:
           # Prints the status code of the Request
           echo "Status code from the request of getting FOD application: ${Get_Request_Status_Code}"
           
-          # Parses and Prints the response of the request
+          # Prints the response of the GET Request as a parsed JSON
           echo "API Request response saved to a JSON file. Showing all results from the query:"
           jq . get-application-output.json
 
@@ -75,7 +76,7 @@ jobs:
                 -H "Authorization: Bearer ${FOD_API_TOKEN}" \
                 -H "Accept: application/json" \
                 -w "%{http_code}" \
-                -o "create-application-output.json
+                -o "create-application-output.json \
                 -d @data.json)
                 
               # Saves the POST request's status code
