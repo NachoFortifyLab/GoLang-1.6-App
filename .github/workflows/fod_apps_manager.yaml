@@ -32,7 +32,7 @@ jobs:
            -H "Authorization: Bearer ${FOD_API_TOKEN}" \
            -H "Accept: application/json" \
            -w "%{http_code}" \
-           -o "application-output.json") # Saves the results of the query to a file
+           -o "get-application-output.json") # Saves the results of the query to a file
            
           # Saves the GET request's status code
           Get_Request_Status_Code=$(echo $Get_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
