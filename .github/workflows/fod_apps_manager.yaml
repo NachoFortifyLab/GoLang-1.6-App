@@ -61,28 +61,7 @@ jobs:
                 -H "Accept: application/json" \
                 -w "%{http_code}" \
                 -o "create-application-output.json"
-                -d '{
-                  "applicationName": "${Repo_Name}",
-                   "applicationDescription": "Application created by fod_apps_manager GitHub workflow",
-                   "applicationType": "Web_Thick_Client",
-                   "releaseName": "1.0",
-                   "releaseDescription": null,
-                   "emailList": "${FOD_EMAIL}",
-                   "ownerId": "${FOD_USER_ID}",
-                   "attributes": [
-                      {
-                        "name": "App Lead",
-                        "id": 8170,
-                        "value": "${FOD_USER_ID}"
-                      }
-                   ],
-                   "businessCriticalityType": "High",
-                   "sdlcStatusType": "Production",
-                   "hasMicroservices": false,
-                   "microservices": [],
-                   "releaseMicroserviceName": null,
-                   "userGroupIds": []
-                }';)
+                -d '{"applicationName": "${Repo_Name}", "applicationDescription": "Application created by fod_apps_manager GitHub workflow", "applicationType": "Web_Thick_Client", "releaseName": "1.0", "releaseDescription": null, "emailList": "${FOD_EMAIL}", "ownerId": "${FOD_USER_ID}", "attributes": [{"name": "App Lead", "id": 8170, "value": "${FOD_USER_ID}"}], "businessCriticalityType": "High", "sdlcStatusType": "Production", "hasMicroservices": false, "microservices": [], "releaseMicroserviceName": null, "userGroupIds": []}')
 
               # Saves the POST request's status code
               Create_Request_Status_Code=$(echo $Create_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
