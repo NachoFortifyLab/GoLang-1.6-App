@@ -29,9 +29,26 @@ jobs:
           # Creates a JSON file to be used as body for the Creation of the Applicaiton Request 
           Create_FOD_Application_Body=$(cat <<EOF
           {
-            "name": "John Doe",
-            "age": 30,
-            "city": "Example City"
+            "applicationName": "${Repo_Name}",
+            "applicationDescription": "Created by Fortify On Demand Application Manager",
+            "applicationType": "Web_Thick_Client",
+            "releaseName": "1.0",
+            "releaseDescription": null,
+            "emailList": "${FOD_EMAIL}",
+            "ownerId": ${FOD_USER_ID},
+            "attributes": [
+               {
+                 "name": "App Lead",
+                 "id": 8170,
+                 "value": "${FOD_USER_ID}"
+               }
+            ],
+            "businessCriticalityType": "High",
+            "sdlcStatusType": "Production",
+            "hasMicroservices": false,
+            "microservices": [],
+            "releaseMicroserviceName": null,
+            "userGroupIds": [] 
           }
           EOF
           )
