@@ -72,7 +72,7 @@ jobs:
           if [[ $Get_Request_Status_Code -eq 200 ]]; then
             echo "API Request is successful."
 
-            # Prints the status code of the GET Request
+            # Prints the status code of the GET Request (Passed Request)
             echo "Status code from the request of getting FOD application: ${Get_Request_Status_Code}"
 
             # Prints the response of the GET Request as a parsed JSON (Passed Request)
@@ -105,7 +105,7 @@ jobs:
               echo "Status code from the request of creation a FOD application: ${Create_Request_Status_Code}"
 
               if [[ $Create_Request_Status_Code -eq 201 ]]; then
-                echo "Your application ${Repo_Name} has been created in your Fortify On Demand Tenant"
+                echo "Your application ${Repo_Name} has been created in your Fortify On Demand Tenant."
 
                 # Prints the status code of the POST Request (Passed Request)
                 echo "Status code from the request of creation a FOD application: ${Create_Request_Status_Code}"
@@ -126,14 +126,9 @@ jobs:
                 exit 1  # Exit with a non-zero status code to indicate failure
               fi
             else
-              echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application"
+              echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
 
-              # Prints the status code of the GET Request (Existing Application in FOD)
-              echo "Status code from the request of getting FOD application: ${Get_Request_Status_Code}"
-
-              # Prints the response of the GET Request as a parsed JSON (Existing Application in FOD)
-              echo "API Request response saved to a JSON file. Showing the results from the query:"
-              jq . get-application-output.json
+              echo "Proceeding to run the workflow to scan the ${Repo_Name} Application..."
             fi
           else
             echo "API Request failed. FOD API server is down or your Token has expired."
