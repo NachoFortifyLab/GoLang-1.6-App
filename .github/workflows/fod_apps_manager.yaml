@@ -26,6 +26,8 @@ jobs:
           # Prints the repository name
           echo "The Repository which triggered the workflow is: ${Repo_Name}"
 
+          echo "Proceeding to check if an Application called ${Repo_Name} is present in your Fortify On Demand Tenant..."
+
           # Creates a JSON file to be used as body for the Creation of the Applicaiton Request 
           Create_FOD_Application_Body=$(cat <<EOF
           {
@@ -55,9 +57,6 @@ jobs:
 
           # Echo JSON data to a file named data.json
           echo "$Create_FOD_Application_Body" > body.json
-
-          # Prints the parsed data of the JSON file that would be the body of the POST Request
-          jq . body.json
           
           # Sends an API Request with GET method to retrieve an application existance by name and extracts the HTTP status code from the response
           Get_FOD_Application_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
@@ -65,28 +64,30 @@ jobs:
            -H "Accept: application/json" \
            -w "%{http_code}" \
            -o "get-application-output.json") # Saves the results of the query to a file
-           
+
           # Saves the GET request's status code
           Get_Request_Status_Code=$(echo $Get_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
            
           # Prints the status code of the GET Request
           echo "Status code from the request of getting FOD application: ${Get_Request_Status_Code}"
-          
-          # Prints the response of the GET Request as a parsed JSON
-          echo "API Request response saved to a JSON file. Showing all results from the query:"
-          jq . get-application-output.json
-
-          # Extracts the totalcount and items values from the output JSON file
-          ITEMS=$(cat "get-application-output.json" | jq -r '.items')
-          TOTALCOUNT=$(cat "get-application-output.json" | jq -r '.totalCount')
 
           # Checks if the status code of the request is 200 if not it will end the workflow with an error
           if [[ $Get_Request_Status_Code -eq 200 ]]; then
-            echo "API Request was successful."
+            echo "API Request is successful."
+          
+            # Prints the response of the GET Request as a parsed JSON (Passed Request)
+            echo "API Request response saved to a JSON file. Showing the results from the query:"
+            jq . get-application-output.json
+
+            # Extracts the totalcount and items values from the output JSON file
+            ITEMS=$(cat "get-application-output.json" | jq -r '.items')
+            TOTALCOUNT=$(cat "get-application-output.json" | jq -r '.totalCount')
             
-            # Checks if the API Request returns sth if not it will create the application and scan it
+            # Checks if the API Request returns data if not it will create the application and scan it
             if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
               echo "There isn't any Application called ${Repo_Name} found in your Fortify On Demand Tenant"
+              
+              echo "Proceeding to create an Application for ${Repo_Name} in your Fortify On Demand Tenant..."
               
               # Sends an API Request with POST Method to create an application with the Repository Name
               Create_FOD_Application_Request=$(curl -X POST "${FOD_API_URL}/applications" \
@@ -106,21 +107,33 @@ jobs:
               if [[ $Create_Request_Status_Code -eq 201 ]]; then
                 echo "Your application ${Repo_Name} has been created in your Fortify On Demand Tenant"
                 
-                # Prints the response of the POST Request as a parsed JSON (Good One)
-                echo "API Request response saved to a JSON file. Showing all results from the query:"
+                # Prints the response of the POST Request as a parsed JSON (Passed Request)
+                echo "API Request response saved to a JSON file. Showing the results from the query:"
                 jq . create-application-output.json
               else
                 echo "API Request failed. FOD API server is down or your Token has expired or please check the POST Request"
-
-                # Prints the response of the POST Request as a parsed JSON (Bad One)
-                echo "API Request response, please check the errors and fix the issue:"
+                
+                # Prints the response of the POST Request as a parsed JSON (Failed Request)
+                echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
                 jq . create-application-output.json
+                
+                exit 1  # Exit with a non-zero status code to indicate failure
               fi
             else
-              echo "Application ${Repo_Name} is present in your Fortify On Demand Tenant"
+              echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application"
+
+              # Prints the response of the GET Request as a parsed JSON (Existing Application in FOD)
+              echo "API Request response saved to a JSON file. Showing the results from the query:"
+              jq . get-application-output.json
             fi
           else
-            echo "API Request failed. FOD API server is down or your Token has expired"
+            echo "API Request failed. FOD API server is down or your Token has expired."
+            
             echo "Status code from the api request: ${Request_Status_Code}"
+
+            # Prints the response of the GET Request as a parsed JSON (Failed Request)
+            echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
+            jq . get-application-output.json
+            
             exit 1  # Exit with a non-zero status code to indicate failure
           fi
