@@ -1,10 +1,29 @@
-name: Fortify On Demand Application Manager
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
 
+#################################################################################################################################################
+# Fortify lets you build secure software fast with an appsec platform that automates testing throughout the DevSecOps pipeline. Fortify static, #
+# dynamic, interactive, and runtime security testing is available on premises or as a service. To learn more about Fortify, start a free trial  #
+# or contact our sales team, visit microfocus.com/appsecurity.                                                                                  #
+#                                                                                                                                               #
+# Use this workflow template as a basis for integrating Fortify on Demand Static Application Security Testing (SAST) into your GitHub workflows.#
+# This template demonstrates the steps to check if an application exists in your Fortify On Demand Tenant, create it if it's not exists,        #
+# Prepare the code+dependencies, initiate a scan, download results once complete and import into GitHub Security Code Scanning Alerts.          #                                      #
+# Existing customers should review inputs and environment variables below to configure scanning against                                         #
+# an existing application in your Fortify on Demand tenant. Additional information is available in the comments throughout the workflow, the    #
+# documentation for the Fortify actions used, and the Fortify on Demand / ScanCentral Client product documentation. If you need additional      #
+# assistance with configuration, feel free to create a help ticket in the Fortify on Demand portal.                                             #
+#################################################################################################################################################
+
+name: Fortify On Demand Application and Scan Manager
+
+# TODO: Customize trigger events based on your DevSecOps processes and typical FoD SAST scan time
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   fod-application-management:
@@ -127,8 +146,6 @@ jobs:
               fi
             else
               echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
-
-              echo "Proceeding to run the workflow to scan the ${Repo_Name} Application..."
             fi
           else
             echo "API Request failed. FOD API server is down or your Token has expired."
