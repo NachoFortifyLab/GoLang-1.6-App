@@ -150,48 +150,48 @@ jobs:
                 
                 exit 1  # Exit with a non-zero status code to indicate failure
               fi
-            else
-              echo "API Request is successful."
+          else
+            echo "API Request is successful."
               
-              echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
+            echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
 
-              # Extracts the applicationid value from the output JSON file of the Get Application Request
-              FOD_APP_ID=$(cat "get-application-output.json" | jq -r '.applicationId')
+            # Extracts the applicationid value from the output JSON file of the Get Application Request
+            FOD_APP_ID=$(cat "get-application-output.json" | jq -r '.applicationId')
 
-              # Sends an API Request with GET method to retrieve the release from the aplication by applicationid and extracts the HTTP status code from the response
-              Get_FOD_Release_Request=$(curl -X GET "${FOD_API_URL}/releases?filters=applicationId%3A${FOD_APP_ID}" \
-               -H "Authorization: Bearer ${FOD_API_TOKEN}" \
-               -H "Accept: application/json" \
-               -w "%{http_code}" \
-               -o "get-release-output.json") # Saves the results of the query to a file
+            # Sends an API Request with GET method to retrieve the release from the aplication by applicationid and extracts the HTTP status code from the response
+            Get_FOD_Release_Request=$(curl -X GET "${FOD_API_URL}/releases?filters=applicationId%3A${FOD_APP_ID}" \
+              -H "Authorization: Bearer ${FOD_API_TOKEN}" \
+              -H "Accept: application/json" \
+              -w "%{http_code}" \
+              -o "get-release-output.json") # Saves the results of the query to a file
 
-              # Saves the GET request's status code
-              Get_Release_Request_Status_Code=$(echo $Get_FOD_Release_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+            # Saves the GET request's status code
+            Get_Release_Request_Status_Code=$(echo $Get_FOD_Release_Request | tr -d '\n' | sed -e 's/.*Status Code://')
 
-              if [[ $Get_Release_Request_Status_Code -eq 200 ]]; then
-                echo "API Request is successful."
+            if [[ $Get_Release_Request_Status_Code -eq 200 ]]; then
+              echo "API Request is successful."
                 
-                # Prints the status code of the GET Request (Passed Request)
-                echo "Status code from the request of getting a FOD release: ${Get_Release_Request_Status_Code}"
+              # Prints the status code of the GET Request (Passed Request)
+              echo "Status code from the request of getting a FOD release: ${Get_Release_Request_Status_Code}"
                 
-                # Prints the response of the GET Request as a parsed JSON (Passed Request)
-                echo "API Request response saved to a JSON file. Showing the results from the query:"
-                jq . get-release-output.json
+              # Prints the response of the GET Request as a parsed JSON (Passed Request)
+              echo "API Request response saved to a JSON file. Showing the results from the query:"
+              jq . get-release-output.json
 
-                # Extracts the releaseid value from the output JSON file of the Application Creation Request
-                FOD_Release_ID=$(cat "get-release-output.json" | jq -r '.releaseId')
-                echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job for following jobs
-              else
-                echo "API Request failed. FOD API server is down or your Token has expired."
-                # Prints the status code of the GET Request (Failed Request)
-                echo "Status code from the request of getting the FOD release: ${Get_Release_Request_Status_Code}"
+              # Extracts the releaseid value from the output JSON file of the Application Creation Request
+              FOD_Release_ID=$(cat "get-release-output.json" | jq -r '.releaseId')
+              echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job for following jobs
+            else
+              echo "API Request failed. FOD API server is down or your Token has expired."
+              # Prints the status code of the GET Request (Failed Request)
+              echo "Status code from the request of getting the FOD release: ${Get_Release_Request_Status_Code}"
 
-                # Prints the response of the GET Request as a parsed JSON (Failed Request)
-                echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
-                jq . get-release-output.json
+              # Prints the response of the GET Request as a parsed JSON (Failed Request)
+              echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
+              jq . get-release-output.json
             
-                exit 1  # Exit with a non-zero status code to indicate failure
-              fi
+              exit 1  # Exit with a non-zero status code to indicate failure
+            fi
           else
             echo "API Request failed. FOD API server is down or your Token has expired."
 
