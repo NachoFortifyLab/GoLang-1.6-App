@@ -44,9 +44,7 @@ jobs:
           Repo_Name="${{ github.event.repository.name }}"
           FOD_USER_ID="${{ secrets.FOD_USER_ID }}"
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
-
-          echo "FOD API URL: ${FOD_API_URL}"
-
+          
           # Prints the repository name
           echo "The Repository which triggered the workflow is: ${Repo_Name}"
 
@@ -123,7 +121,7 @@ jobs:
                 -d @body.json)
                 
               # Saves the POST request's status code
-              Create_Application_Request_Status_Code=$(echo $Create_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://'
+              Create_Application_Request_Status_Code=$(echo $Create_FOD_Application_Request | tr -d '\n' | sed -e 's/.*Status Code://')
 
               if [[ $Create_Application_Request_Status_Code -eq 201 ]]; then
                 echo "API Request is successful."
