@@ -203,7 +203,7 @@ jobs:
             jq . get-application-output.json
             
             exit 1  # Exit with a non-zero status code to indicate failure
-          fi
+          
           
   FOD-SAST-Scan:
     # Use the appropriate runner for building your source code.
