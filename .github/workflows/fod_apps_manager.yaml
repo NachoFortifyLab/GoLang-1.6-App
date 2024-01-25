@@ -140,7 +140,7 @@ jobs:
 
                 # Extracts the releaseid value from the output JSON file of the Application Creation Request
                 FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
-                echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the job next steps
+                echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job for following jobs
               else
                 echo "API Request failed. FOD API server is down or your Token has expired or please check the POST Request"
 
@@ -155,6 +155,10 @@ jobs:
               fi
             else
               echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
+
+              # Extracts the releaseid value from the output JSON file of the Application Creation Request
+              FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
+              echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job for following jobs
             fi
           else
             echo "API Request failed. FOD API server is down or your Token has expired."
@@ -216,7 +220,7 @@ jobs:
         run: java -jar $FOD_UPLOAD_JAR -z package.zip -aurl $FOD_API_URL -purl $FOD_URL -rid "$FOD_RELEASE_ID" -tc "$FOD_TENANT" -uc "$FOD_USER" "$FOD_PAT" $FOD_UPLOADER_OPTS -n "$FOD_UPLOADER_NOTES"
         env:
           FOD_URL: ${{ secrets.FOD_URL }}
-          FOD_API_URL: ${{ secrets.FOD_API_URL }}
+          FOD_API_URL: "https://api.ams.fortify.com/"
           FOD_TENANT: ${{ secrets.FOD_TENANT }}
           FOD_USER: ${{ secrets.FOD_USER }}
           FOD_PAT: ${{ secrets.FOD_PAT }}
