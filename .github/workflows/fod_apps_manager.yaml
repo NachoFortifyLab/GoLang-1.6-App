@@ -45,6 +45,8 @@ jobs:
           FOD_USER_ID="${{ secrets.FOD_USER_ID }}"
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
 
+          echo "FOD API URL: ${FOD_API_URL}"
+
           # Prints the repository name
           echo "The Repository which triggered the workflow is: ${Repo_Name}"
 
