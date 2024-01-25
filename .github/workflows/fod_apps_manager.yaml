@@ -149,6 +149,7 @@ jobs:
                 jq . create-application-output.json
                 
                 exit 1  # Exit with a non-zero status code to indicate failure
+              fi
             else
               echo "API Request is successful."
               
