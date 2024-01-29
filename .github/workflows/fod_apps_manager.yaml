@@ -222,12 +222,12 @@ jobs:
       - name: Perform a FOD SAST Scan on the FOD Application assigned to the Repo
         run: java -jar $FOD_UPLOAD_JAR -z package.zip -aurl $FOD_API_URL -purl $FOD_URL -rid "$FOD_RELEASE_ID" -tc "$FOD_TENANT" -uc "$FOD_USER" "$FOD_PAT" $FOD_UPLOADER_OPTS -n "$FOD_UPLOADER_NOTES"
         env:
-          FOD_URL: "https://ams.fortify.com/"
-          FOD_API_URL: "https://api.ams.fortify.com/"
+          FOD_URL: "${{ secrets.FOD_URL }}"
+          FOD_API_URL: "${{ secrets.FOD_API_BASE_URL }}"
           FOD_TENANT: ${{ secrets.FOD_TENANT }}
           FOD_USER: ${{ secrets.FOD_USER }}
           FOD_PAT: ${{ secrets.FOD_PAT }}
-          FOD_RELEASE_ID: ${{ secrets.FOD_RELEASE_ID }}
+          FOD_RELEASE_ID: ${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
           FOD_UPLOADER_OPTS: "-ep 2 -pp 0 -I 1 -apf"
           FOD_UPLOADER_NOTES: 'Triggered by GitHub Actions (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})'
 
@@ -235,11 +235,11 @@ jobs:
       - name: Export results to GitHub-optimized SARIF
         uses: fortify/gha-export-vulnerabilities@fcb374411cff9809028c911dabb8b57dbdae623b
         with:
-          FOD_URL: ${{ secrets.FOD_URL }}
-          FOD_TENANT: ${{ secrets.FOD_TENANT }}
-          FOD_USER: ${{ secrets.FOD_USER }}
-          FOD_PAT: ${{ secrets.FOD_PAT }}
-          FOD_RELEASE_ID: ${{ secrets.FOD_RELEASE_ID }}
+          fod_base_url: "${{ secrets.FOD_URL }}"
+          fod_tenant: ${{ secrets.FOD_TENANT }}
+          fod_user: ${{ secrets.FOD_USER }}
+          fod_password: ${{ secrets.FOD_PAT }}
+          fod_release_id: ${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
           
       # Import Fortify on Demand results to GitHub Security Code Scanning
       - name: Import Results
