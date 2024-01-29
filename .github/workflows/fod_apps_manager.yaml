@@ -160,6 +160,8 @@ jobs:
               # Extracts the releaseid value from the output JSON file of the Application Creation Request
               FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
               echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job for following jobs
+
+              echo "Release Id: ${FOD_Release_ID}"
             fi
           else
             echo "API Request has failed. FOD API server is down or your Token has expired."
