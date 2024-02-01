@@ -142,7 +142,7 @@ jobs:
                 FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
                 echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job to be used in next jobs
 
-                echo "Proceeding to set up the Assessment Type, Entitlement Preference, Audit Preference Type and Technology Stack options on ${Repo_Name} application..."
+                echo "Proceeding to set up the sast scan options on ${Repo_Name} application..."
 
                 # Creates a JSON file to be used as body for the saving of the static scan setup Request 
                 Set_Up_FOD_Application_Sast_Scan_Setup_Details_Body=$(cat <<EOF
