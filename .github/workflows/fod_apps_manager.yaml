@@ -100,6 +100,7 @@ jobs:
 
           # Echo JSON data to a file named options.json
           echo "$Set_Up_FOD_Application_Static_Scan_Options_Body" > options.json
+          jq . options.json
           
           # Sends an API Request with GET method to retrieve an application existance by name and extracts the HTTP status code from the response
           Get_FOD_Application_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
