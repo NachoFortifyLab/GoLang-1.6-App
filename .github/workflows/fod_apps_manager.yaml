@@ -158,13 +158,12 @@ jobs:
                   "performOpenSourceAnalysis": false,
                   "auditPreferenceType": 2,
                   "includeThirdPartyLibraries": false,
-                  
                 }
                 EOF
                 )
-
+                
                 # Echo JSON data to a file named options.json
-                echo "$Set_Up_FOD_Application_Sast_Scan_Setup_Details_Body" > optios.json
+                echo "$Set_Up_FOD_Application_Sast_Scan_Setup_Details_Body" > options.json
                 
                 # Sends an API Request with PUT method to set up static scan setup details from the ${Repo_Name} application and extracts the HTTP status code from the response
                 Set_Up_FOD_Application__Sast_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/${FOD_Release_ID}/static-scans/scan-setup" \
