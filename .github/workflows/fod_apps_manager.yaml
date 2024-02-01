@@ -79,30 +79,6 @@ jobs:
           
           # Echo JSON data to a file named body.json
           echo "$Create_FOD_Application_Body" > body.json
-
-          # Creates a JSON file to be used as body for the saving of the static scan setup Request 
-          Set_Up_FOD_Application_Sast_Scan_Setup_Details_Body=$(cat <<EOF
-          {
-            "assessmentTypeId": 274,
-            "entitlementId": 12880,
-            "entitlementFrequencyType": 2,
-            "releaseId": $FOD_Release_ID,
-            "technologyStackId": 22,
-            "technologyStack": "Go",
-            "languageLevelId": null,
-            "languageLevel": null,
-            "performOpenSourceAnalysis": false,
-            "auditPreferenceType": 2,
-            "includeThirdPartyLibraries": false
-            "useSourceControl": false,
-            "scanBinary": null
-          }
-          EOF
-          )
-                
-          # Echo JSON data to a file named options.json
-          echo "$Set_Up_FOD_Application_Sast_Scan_Setup_Details_Body" > options.json
-          jq . options.json
           
           # Sends an API Request with GET method to retrieve an application existance by name and extracts the HTTP status code from the response
           Get_FOD_Application_Request=$(curl -X GET "${FOD_API_URL}/applications?filters=applicationName%3A${Repo_Name}" \
