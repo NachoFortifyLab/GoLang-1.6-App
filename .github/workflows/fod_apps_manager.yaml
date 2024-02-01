@@ -145,7 +145,7 @@ jobs:
                 echo "Proceeding to set up the static scan options on ${Repo_Name} application..."
 
                 # Creates a JSON file to be used as body for the saving of the static scan options Request
-                Set_Up_FOD_Application_Static_Scan_Options_Body=$(cat <<EOF
+                Set_Up_FOD_Application_Static_Scan_Options_Body=$(cat <<-EOF
                 {
                   "assessmentTypeId": 274,
                   "entitlementId": 12880,
