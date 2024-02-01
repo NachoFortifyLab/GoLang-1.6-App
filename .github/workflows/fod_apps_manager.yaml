@@ -93,7 +93,9 @@ jobs:
             "languageLevel": null,
             "performOpenSourceAnalysis": false,
             "auditPreferenceType": 2,
-            "includeThirdPartyLibraries": false,
+            "includeThirdPartyLibraries": false
+            "useSourceControl": false,
+            "scanBinary": null
           }
           EOF
           )
