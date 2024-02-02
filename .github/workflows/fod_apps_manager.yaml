@@ -144,23 +144,23 @@ jobs:
 
                 echo "Proceeding to set up the static scan options on ${Repo_Name} application..."
 
-                # Creates a JSON file to be used as body for the saving of the static scan options Request
-                Save_FOD_Application_Static_Scan_Options_Body=$(cat <<EOF
-                {
-                  "assessmentTypeId": 274,
-                  "entitlementId": 12880,
-                  "entitlementFrequencyType": 2,
-                  "releaseId": $FOD_Release_ID,
-                  "technologyStackId": 22,
-                  "technologyStack": "Go",
-                  "languageLevelId": null,
-                  "languageLevel": null,
-                  "performOpenSourceAnalysis": false,
-                  "auditPreferenceType": 2,
-                  "includeThirdPartyLibraries": false
-                }
-                EOF
-                )
+              # Creates a JSON file to be used as body for the saving of the static scan options Request
+              Save_FOD_Application_Static_Scan_Options_Body=$(cat <<EOF
+              {
+                 "assessmentTypeId": 274,
+                 "entitlementId": 12880,
+                 "entitlementFrequencyType": 2,
+                 "releaseId": $FOD_Release_ID,
+                 "technologyStackId": 22,
+                 "technologyStack": "Go",
+                 "languageLevelId": null,
+                 "languageLevel": null,
+                 "performOpenSourceAnalysis": false,
+                 "auditPreferenceType": 2,
+                 "includeThirdPartyLibraries": false
+              }
+              EOF
+              )
 
                 # Echo JSON data to a file named options.json
                 echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
