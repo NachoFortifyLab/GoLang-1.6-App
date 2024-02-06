@@ -149,8 +149,10 @@ jobs:
                 {}
                 EOF
                 )
+                
                 # Echo JSON data to a file named options.json
                 echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
+                
               else
                 echo "API Request has failed. FOD API server is down or your Token has expired or please check the POST Request"
                 # Prints the status code of the POST Request (Failed Request)
