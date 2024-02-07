@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       FOD_Release_ID: ${{ steps.FODAppManagement.outputs.releaseID }}
-      Is_FOD_APP_Exists: ${{ steps.FODAppManagement.outputs. }}
+      Is_FOD_APP_Exists: ${{ steps.FODAppManagement.outputs.isFODAppExists }}
 
     steps:
     - name: Checkout code
