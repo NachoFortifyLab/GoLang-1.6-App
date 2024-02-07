@@ -184,7 +184,7 @@ jobs:
   FOD-SAST-Scan-Options:
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
-    if: needs.FODAppManagement.outputs.isFODAppExists == 'false'
+    if: FODAppManagement.outputs.isFODAppExists == 'false'
     env:
       FOD_URL: "${{ secrets.FOD_URL }}"
       FOD_API_URL: "${{ secrets.FOD_API_BASE_URL }}"
@@ -267,9 +267,9 @@ jobs:
     # Use the appropriate runner for building your source code.
     # TODO: Use a Windows runner for .NET projects that use msbuild. Additional changes to RUN commands will be required to switch to Windows syntax.
     if: |
-      needs.FOD-SAST-Scan-Options == 'true' || 
-      needs.FOD-SAST-Scan-Options == 'false'
-      needs.FOD-Application-Management.result == 'success' 
+      FOD-SAST-Scan-Options == 'true' || 
+      FOD-SAST-Scan-Options == 'false'
+      FOD-Application-Management.result == 'success' 
     runs-on: ubuntu-latest
     permissions:
       actions: read
