@@ -113,7 +113,7 @@ jobs:
               # Sets boolean variable to false dynamically indicating that the FOD App not exists
               echo "::set-output name=isFODAppExists::false"
 
-              ${isFODAppExists}
+              echo "${isFODAppExists}"
               
               echo "Proceeding to create an Application for ${Repo_Name} repo in your Fortify On Demand Tenant..."
               
@@ -166,7 +166,7 @@ jobs:
               # Sets boolean variable to true dynamically indicating that the FOD App not exists
               echo "::set-output name=isFODAppExists::true"
 
-              ${isFODAppExists}
+              echo "${isFODAppExists}"
               
               # Extracts the releaseid value from the output JSON file of the Application Creation Request
               FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
