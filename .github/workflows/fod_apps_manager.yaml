@@ -110,8 +110,8 @@ jobs:
             if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
               echo "There isn't any Application called ${Repo_Name} found in your Fortify On Demand Tenant"
 
-              isFODAppExists = "false"
-              echo "::set-output name=isFODAppExists::$Is_FOD_APP_Exists" # Saves the status of the FOD Application as the output of the current job for next job
+              $isFODAppExists = "false"
+              echo "::set-output name=$isFODAppExists::$Is_FOD_APP_Exists" # Saves the status of the FOD Application as the output of the current job for next job
               
               echo "Proceeding to create an Application for ${Repo_Name} repo in your Fortify On Demand Tenant..."
               
@@ -161,8 +161,8 @@ jobs:
               
               echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
 
-              isFODAppExists = "true"
-              echo "::set-output name=isFODAppExists::$Is_FOD_APP_Exists" # Saves the status of the FOD Application as the output of the current job for next job
+              $isFODAppExists = "true"
+              echo "::set-output name=$isFODAppExists::$Is_FOD_APP_Exists" # Saves the status of the FOD Application as the output of the current job for next job
               
               # Extracts the releaseid value from the output JSON file of the Application Creation Request
               FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
