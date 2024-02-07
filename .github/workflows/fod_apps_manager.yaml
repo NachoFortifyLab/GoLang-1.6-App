@@ -112,8 +112,6 @@ jobs:
 
               # Sets boolean variable to false dynamically indicating that the FOD App not exists
               echo "::set-output name=isFODAppExists::false"
-
-              echo "${isFODAppExists}"
               
               echo "Proceeding to create an Application for ${Repo_Name} repo in your Fortify On Demand Tenant..."
               
@@ -165,16 +163,12 @@ jobs:
 
               # Sets boolean variable to true dynamically indicating that the FOD App not exists
               echo "::set-output name=isFODAppExists::true"
-
-              echo "${isFODAppExists}"
               
               # Extracts the releaseid value from the output JSON file of the Application Creation Request
               FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
               
               # Saves the releaseid as the output of the current job for next job
               echo "::set-output name=releaseID::$FOD_Release_ID"
-
-              ${releaseID}
             fi
           else
             echo "API Request has failed. FOD API server is down or your Token has expired."
@@ -190,8 +184,9 @@ jobs:
           fi
 
   FOD-SAST-Scan-Options:
+    needs: FOD-Application-Management
     runs-on: ubuntu-latest
-    #if: ${{ needs.FODAppManagement.outputs.Is_FOD_APP_Exists == 'false' }}                                           
+    if: ${{ needs.FODAppManagement.outputs.Is_FOD_APP_Exists == 'false' }}                                           
     env:
       FOD_URL: "${{ secrets.FOD_URL }}"
       FOD_API_URL: "${{ secrets.FOD_API_BASE_URL }}"
