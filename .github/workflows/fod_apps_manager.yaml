@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       FOD_Release_ID: ${{ steps.FODAppManagement.outputs.releaseID }}
+      Is_FOD_APP_Exists: ${{ steps.FODAppManagement.outputs. }}
 
     steps:
     - name: Checkout code
@@ -50,7 +51,7 @@ jobs:
           
           echo "Proceeding to check if an Application called ${Repo_Name} is present in your Fortify On Demand Tenant..."
           
-          # Creates a JSON file to be used as body for the Creation of the Applicaiton Request 
+          # Creates a JSON file to be used as body for the Creation of the Application Request 
           Create_FOD_Application_Body=$(cat <<EOF
           {
             "applicationName": "$Repo_Name",
@@ -108,6 +109,9 @@ jobs:
             # Checks if the API Request returns data if not it will create the application and scan it
             if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
               echo "There isn't any Application called ${Repo_Name} found in your Fortify On Demand Tenant"
+
+              isFODAppExists = "false"
+              echo "::set-output name=isFODAppExists::$Is_FOD_APP_Exists" # Saves the status of the FOD Application as the output of the current job for next job
               
               echo "Proceeding to create an Application for ${Repo_Name} repo in your Fortify On Demand Tenant..."
               
@@ -141,17 +145,6 @@ jobs:
                 # Extracts the releaseid value from the output JSON file of the Application Creation Request
                 FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
                 echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job to be used in next jobs
-                
-                echo "Proceeding to set up the static scan options on ${Repo_Name} application..."
-                
-                # Creates a JSON file to be used as body for the saving of the static scan options Request
-                Save_FOD_Application_Static_Scan_Options_Body=$(cat <<EOF
-                EOF
-                )
-                
-                # Echo JSON data to a file named options.json
-                echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
-                
               else
                 echo "API Request has failed. FOD API server is down or your Token has expired or please check the POST Request"
                 # Prints the status code of the POST Request (Failed Request)
@@ -167,12 +160,13 @@ jobs:
               echo "API Request was successful."
               
               echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
+
+              isFODAppExists = "true"
+              echo "::set-output name=isFODAppExists::$Is_FOD_APP_Exists" # Saves the status of the FOD Application as the output of the current job for next job
               
               # Extracts the releaseid value from the output JSON file of the Application Creation Request
               FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
-              echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job for following jobs
-
-              echo "Release Id: ${FOD_Release_ID}"
+              echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job for next job
             fi
           else
             echo "API Request has failed. FOD API server is down or your Token has expired."
