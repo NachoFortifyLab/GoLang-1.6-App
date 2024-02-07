@@ -182,7 +182,6 @@ jobs:
           fi
 
   FOD-SAST-Scan-Options:
-    needs: FOD-Application-Management
     runs-on: ubuntu-latest
     if: ${{ needs.FODAppManagement.outputs.Is_FOD_APP_Exists == 'false' }}                                           
     env:
