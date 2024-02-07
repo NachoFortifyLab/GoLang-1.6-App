@@ -112,6 +112,8 @@ jobs:
 
               # Sets boolean variable to false dynamically indicating that the FOD App not exists
               echo "::set-output name=isFODAppExists::false"
+
+              ${isFODAppExists}
               
               echo "Proceeding to create an Application for ${Repo_Name} repo in your Fortify On Demand Tenant..."
               
@@ -163,10 +165,16 @@ jobs:
 
               # Sets boolean variable to true dynamically indicating that the FOD App not exists
               echo "::set-output name=isFODAppExists::true"
+
+              ${isFODAppExists}
               
               # Extracts the releaseid value from the output JSON file of the Application Creation Request
               FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
-              echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job for next job
+              
+              # Saves the releaseid as the output of the current job for next job
+              echo "::set-output name=releaseID::$FOD_Release_ID"
+
+              ${releaseID}
             fi
           else
             echo "API Request has failed. FOD API server is down or your Token has expired."
@@ -183,7 +191,7 @@ jobs:
 
   FOD-SAST-Scan-Options:
     runs-on: ubuntu-latest
-    if: ${{ needs.FODAppManagement.outputs.Is_FOD_APP_Exists == 'false' }}                                           
+    #if: ${{ needs.FODAppManagement.outputs.Is_FOD_APP_Exists == 'false' }}                                           
     env:
       FOD_URL: "${{ secrets.FOD_URL }}"
       FOD_API_URL: "${{ secrets.FOD_API_BASE_URL }}"
@@ -265,7 +273,7 @@ jobs:
   FOD-SAST-Scan:
     # Use the appropriate runner for building your source code.
     # TODO: Use a Windows runner for .NET projects that use msbuild. Additional changes to RUN commands will be required to switch to Windows syntax.
-    if: ${{ needs.FOD-Application-Management.result == 'success'  }}
+    #if: ${{ needs.FOD-Application-Management.result == 'success'  }}
     runs-on: ubuntu-latest
     permissions:
       actions: read
