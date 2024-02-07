@@ -184,7 +184,7 @@ jobs:
   FOD-SAST-Scan-Options:
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
-    if: FODAppManagement.outputs.isFODAppExists == 'false'
+    if: ${{ needs.FODAppManagement.outputs.isFODAppExists == 'false' }}                                           
     env:
       FOD_URL: "${{ secrets.FOD_URL }}"
       FOD_API_URL: "${{ secrets.FOD_API_BASE_URL }}"
@@ -197,10 +197,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name:  Setups up FOD Static Scan Options for the new Application
+    - name:  Setups FOD Static Scan Options for the new Application created
       id: FODAppSastScanOptions
       run: |
-          echo "Proceeding to set up SAST Scan options for your ${Repo_Name} Application in Fortify On Demand..."
+          echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
 
           # Creates a JSON file to be used as body for the Set Up of the SAST Scan options 
           Save_FOD_Application_Static_Scan_Options_Body=$(cat <<-EOF
@@ -266,10 +266,7 @@ jobs:
   FOD-SAST-Scan:
     # Use the appropriate runner for building your source code.
     # TODO: Use a Windows runner for .NET projects that use msbuild. Additional changes to RUN commands will be required to switch to Windows syntax.
-    if: |
-      FOD-SAST-Scan-Options == 'true' || 
-      FOD-SAST-Scan-Options == 'false'
-      FOD-Application-Management.result == 'success' 
+    if: ${{ needs.FOD-Application-Management.result == 'success'  }}
     runs-on: ubuntu-latest
     permissions:
       actions: read
