@@ -202,7 +202,9 @@ jobs:
           Repo_Name="${{ github.event.repository.name }}"
           FOD_USER_ID="${{ secrets.FOD_USER_ID }}"
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
+          FOD_RELEASE_ID=${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
 
+          
           echo "The variable from job1 is ${{ needs.FODAppManagement.outputs.releaseID }}"
           
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
@@ -227,8 +229,6 @@ jobs:
 
           # Echo JSON data to a file named options.json
           echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
-
-          echo "${FOD_API_URL} and ${FOD_RELEASE_ID}"
 
           # Sends an API Request with PUT Method to set up the sast scan options of the recently created application
           Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/${FOD_RELEASE_ID}/static-scans/scan-setup" \
