@@ -186,13 +186,6 @@ jobs:
   FOD-SAST-Scan-Options:
     needs: FOD-Application-Management
     runs-on: ubuntu-latest                                           
-    env:
-      FOD_URL: "${{ secrets.FOD_URL }}"
-      FOD_API_URL: "${{ secrets.FOD_API_BASE_URL }}"
-      FOD_TENANT: ${{ secrets.FOD_TENANT }}
-      FOD_USER: ${{ secrets.FOD_USER }}
-      FOD_PAT: ${{ secrets.FOD_PAT }}
-      FOD_RELEASE_ID: ${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
          
     steps:
     - name: Checkout code
@@ -260,6 +253,16 @@ jobs:
             # Prints the response of the PUT Request as a parsed JSON (Failed Request)
             echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
             jq . save-sast-scan-options-output.json
+        
                 
             exit 1  # Exit with a non-zero status code to indicate failure
           fi  
+      env:
+        FOD_URL: "${{ secrets.FOD_URL }}"
+        FOD_API_URL: "${{ secrets.FOD_API_BASE_URL }}"
+        FOD_TENANT: ${{ secrets.FOD_TENANT }}
+        Repo_Name: ${{ github.event.repository.name }}
+        FOD_API_TOKEN: "${{ secrets.FOD_BEARER_TOKEN }}"
+        FOD_USER: ${{ secrets.FOD_USER }}
+        FOD_PAT: ${{ secrets.FOD_PAT }}
+        FOD_RELEASE_ID: ${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
