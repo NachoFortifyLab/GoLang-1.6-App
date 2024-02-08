@@ -188,6 +188,7 @@ jobs:
   FOD-SAST-Scan-Options:
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
+    if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
          
     steps:
     - name: Checkout code
