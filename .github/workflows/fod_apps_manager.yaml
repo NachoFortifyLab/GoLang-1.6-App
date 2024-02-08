@@ -10,7 +10,7 @@
 #                                                                                                                                               #
 # Use this workflow template as a basis for integrating Fortify on Demand Static Application Security Testing (SAST) into your GitHub workflows.#
 # This template demonstrates the steps to check if an application exists in your Fortify On Demand Tenant, create it if it's not exists,        #
-# Prepare the code+dependencies, initiate a scan, download results once complete and import into GitHub Security Code Scanning Alerts.          #                                      #
+# Prepare the code+dependencies, initiate a scan, download results once complete and import into GitHub Security Code Scanning Alerts.          #                                      
 # Existing customers should review inputs and environment variables below to configure scanning against                                         #
 # an existing application in your Fortify on Demand tenant. Additional information is available in the comments throughout the workflow, the    #
 # documentation for the Fortify actions used, and the Fortify on Demand / ScanCentral Client product documentation. If you need additional      #
@@ -225,8 +225,10 @@ jobs:
           # Echo JSON data to a file named options.json
           echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
 
+          echo "${FOD_API_URL} and ${FOD_RELEASE_ID}"
+
           # Sends an API Request with PUT Method to set up the sast scan options of the recently created application
-          Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/$FOD_RELEASE_ID/static-scans/scan-setup" \
+          Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/${FOD_RELEASE_ID}/static-scans/scan-setup" \
             -H "Authorization: Bearer ${FOD_API_TOKEN}" \
             -H "Accept: application/json" \
             -H "Content-Type: application/json" \
