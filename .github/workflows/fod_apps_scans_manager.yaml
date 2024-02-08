@@ -217,6 +217,7 @@ jobs:
                 # Prints the response of the GET Request as a parsed JSON (Failed Request)
                 echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
                 jq . get-release-output.json
+              fi
           else
             echo "API Request has failed. FOD API server is down or your Token has expired."
             
