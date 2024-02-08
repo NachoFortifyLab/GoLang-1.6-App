@@ -194,6 +194,13 @@ jobs:
     - name:  Setups FOD Static Scan Options for the new Application created
       id: FODAppSastScanOptions
       run: |
+          # Sets up your Fortify on Demand API and Github requiered variables
+          FOD_API_URL="${{ secrets.FOD_API_URL }}"
+          FOD_API_TOKEN="${{ secrets.FOD_BEARER_TOKEN }}"
+          Repo_Name="${{ github.event.repository.name }}"
+          FOD_USER_ID="${{ secrets.FOD_USER_ID }}"
+          FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
+          
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
 
           # Creates a JSON file to be used as body for the Set Up of the SAST Scan options 
@@ -256,13 +263,4 @@ jobs:
         
                 
             exit 1  # Exit with a non-zero status code to indicate failure
-          fi  
-      env:
-        FOD_URL: "${{ secrets.FOD_URL }}"
-        FOD_API_URL: "${{ secrets.FOD_API_BASE_URL }}"
-        FOD_TENANT: ${{ secrets.FOD_TENANT }}
-        Repo_Name: ${{ github.event.repository.name }}
-        FOD_API_TOKEN: "${{ secrets.FOD_BEARER_TOKEN }}"
-        FOD_USER: ${{ secrets.FOD_USER }}
-        FOD_PAT: ${{ secrets.FOD_PAT }}
-        FOD_RELEASE_ID: ${{ needs.FODAppManagement.outputs.releaseID }}
+          fi 
