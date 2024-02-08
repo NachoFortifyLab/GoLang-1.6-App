@@ -39,7 +39,7 @@ jobs:
     - name: Checks an application existance in FOD and Creates it if not exist in the Tenant
       id: FODAppManagement
       run: |
-          # Sets up your Fortify on Demand API and Github requiered variables
+          # Sets up your Fortify on Demand API and Github requiered variables for this job
           FOD_API_URL="${{ secrets.FOD_API_URL }}"
           FOD_API_TOKEN="${{ secrets.FOD_BEARER_TOKEN }}"
           Repo_Name="${{ github.event.repository.name }}"
@@ -187,7 +187,8 @@ jobs:
 
   FOD-SAST-Scan-Options:
     needs: FOD-Application-Management
-    runs-on: ubuntu-latest                                           
+    runs-on: ubuntu-latest
+    if: ${{ needs.FOD-Application-Management.outputs.isFODAppExists == 'false' }}
          
     steps:
     - name: Checkout code
@@ -196,15 +197,13 @@ jobs:
     - name:  Setups FOD Static Scan Options for the new Application created
       id: FODAppSastScanOptions
       run: |
-          # Sets up your Fortify on Demand API and Github requiered variables
+          # Sets up your Fortify on Demand API and Github requiered variables for this job
           FOD_API_URL="${{ secrets.FOD_API_URL }}"
           FOD_API_TOKEN="${{ secrets.FOD_BEARER_TOKEN }}"
           Repo_Name="${{ github.event.repository.name }}"
           FOD_USER_ID="${{ secrets.FOD_USER_ID }}"
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
           FOD_RELEASE_ID=${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
-          
-          echo "The variable from job1 is ${{ needs.FODAppManagement.outputs.releaseID }}"
           
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
 
