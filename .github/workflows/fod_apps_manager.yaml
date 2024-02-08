@@ -200,6 +200,7 @@ jobs:
           Repo_Name="${{ github.event.repository.name }}"
           FOD_USER_ID="${{ secrets.FOD_USER_ID }}"
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
+          FOD_RELEASE_ID="${{ needs.FODAppManagement.outputs.releaseID }}"
           
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
 
