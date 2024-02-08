@@ -30,8 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       FOD_Release_ID: ${{ steps.FODAppManagement.outputs.releaseID }}
-      Is_FOD_APP_Exists: ${{ steps.FODAppManagement.outputs.isFODAppExists }}
-
+      #Is_FOD_APP_Exists: ${{ steps.FODAppManagement.outputs.isFODAppExists }}
+      
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -144,7 +144,9 @@ jobs:
                 
                 # Extracts the releaseid value from the output JSON file of the Application Creation Request
                 FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
-                echo "::set-output name=releaseID::$FOD_Release_ID" # Saves the releaseid as the output of the current job to be used in next jobs
+                
+                # Saves the releaseid as the output of the current job to be used in next jobs
+                echo "::set-output name=releaseID::$FOD_Release_ID"
               else
                 echo "API Request has failed. FOD API server is down or your Token has expired or please check the POST Request"
                 # Prints the status code of the POST Request (Failed Request)
@@ -200,7 +202,8 @@ jobs:
           Repo_Name="${{ github.event.repository.name }}"
           FOD_USER_ID="${{ secrets.FOD_USER_ID }}"
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
-          FOD_RELEASE_ID="${{ needs.FODAppManagement.outputs.releaseID }}"
+
+          echo "The variable from job1 is ${{ needs.FODAppManagement.outputs.releaseID }}"
           
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
 
