@@ -115,7 +115,7 @@ jobs:
               
               echo "Proceeding to create an Application for ${Repo_Name} repo in your Fortify On Demand Tenant..."
               
-              # Sends an API Request with POST Method to create an application with the Repository Name
+              # Sends an API Request with POST Method to create an application with the Repository Name and extracts the HTTP status code from the response
               Create_FOD_Application_Request=$(curl -X POST "${FOD_API_URL}/applications" \
                 -H "Authorization: Bearer ${FOD_API_TOKEN}" \
                 -H "Accept: application/json" \
@@ -163,15 +163,61 @@ jobs:
               
               echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
 
-              # Sets boolean variable to true dynamically indicating that the FOD App not exists
+              # Sets boolean variable to true dynamically indicating that the FOD App exists
               echo "::set-output name=isFODAppExists::true"
+
+              # Extracts the applicationId values from the output JSON file
+              APPID=$(cat "get-application-output.json" | jq -r '.applicationId')
+
+              # Sends an API Request with GET method to retrieve the information from the release related to the application from the repository and extracts the HTTP status code from the response
+              Get_FOD_Release_by_AppId_Request=$(curl -X GET "${FOD_API_URL}/releases?filters=applicationId%3A${APPID}" \
+                -H "Authorization: Bearer ${FOD_API_TOKEN}" \
+                -H "Accept: application/json" \
+                -w "%{http_code}" \
+                -o "get-release-output.json") # Saves the results of the query to a file
+           
+              # Saves the GET request's status code
+              Get_Release_Request_Status_Code=$(echo $Get_FOD_Release_by_AppId_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+
+              # Checks if the status code of the request is 200 if not it will end the workflow with an error
+              if [[ $Get_Release_Request_Status_Code -eq 200 ]]; then
+                echo "API Request was successful."
+            
+                # Prints the status code of the GET Request (Passed Request)
+                echo "Status code from the request of getting FOD application release: ${Get_Release_Request_Status_Code}"
+            
+                # Prints the response of the GET Request as a parsed JSON (Passed Request)
+                echo "API Request response saved to a JSON file. Showing the results from the query:"
+                jq . get-release-output.json
+            
+                # Extracts the totalcount and items values from the output JSON file
+                ITEMS=$(cat "get-release-output.json" | jq -r '.items')
+                TOTALCOUNT=$(cat "get-release-output.json" | jq -r '.totalCount')
+
+                # Checks if the API Request returns data if not it will create the application and scan it
+                if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
+                  echo "There isn't any application related to that applicationId in your Fortify On Demand Tenant"
+
+                  exit 1  # Exit with a non-zero status code to indicate failure
+                else
+                  echo "There is an application related to that applicationId in your Fortify On Demand Tenant"
+
+                  # Extracts the releaseid value from the output JSON file of the Application Creation Request
+                  FOD_Release_ID=$(cat "get-release-output.json" | jq -r '.releaseId')
               
-              # Extracts the releaseid value from the output JSON file of the Application Creation Request
-              FOD_Release_ID=$(cat "create-application-output.json" | jq -r '.releaseId')
-              
-              # Saves the releaseid as the output of the current job for next job
-              echo "::set-output name=releaseID::$FOD_Release_ID"
-            fi
+                 # Saves the releaseid as the output of the current job for next job
+                 echo "::set-output name=releaseID::$FOD_Release_ID"
+                fi 
+              else
+                echo "API Request has failed. FOD API server is down or your Token has expired."
+            
+                # Prints the status code of the GET Request (Failed Request)
+                echo "Status code from the request of getting FOD application release: ${Get_Release_Request_Status_Code}"
+            
+                # Prints the response of the GET Request as a parsed JSON (Failed Request)
+                echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
+                jq . get-release-output.json
+              fi
           else
             echo "API Request has failed. FOD API server is down or your Token has expired."
             
@@ -228,7 +274,7 @@ jobs:
           # Echo JSON data to a file named options.json
           echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
 
-          # Sends an API Request with PUT Method to set up the sast scan options of the recently created application
+          # Sends an API Request with PUT Method to set up the sast scan options of the recently created application and extracts the HTTP status code from the response
           Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/${FOD_RELEASE_ID}/static-scans/scan-setup" \
             -H "Authorization: Bearer ${FOD_API_TOKEN}" \
             -H "Accept: application/json" \
