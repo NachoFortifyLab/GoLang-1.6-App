@@ -226,7 +226,7 @@ jobs:
           echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
 
           # Sends an API Request with PUT Method to set up the sast scan options of the recently created application
-          Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/${FOD_RELEASE_ID}/static-scans/scan-setup" \
+          Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/$FOD_RELEASE_ID/static-scans/scan-setup" \
             -H "Authorization: Bearer ${FOD_API_TOKEN}" \
             -H "Accept: application/json" \
             -H "Content-Type: application/json" \
@@ -236,9 +236,6 @@ jobs:
                 
           # Saves the PUT request's status code
           Static_Scan_Options_Request_Status_Code=$(echo $Save_FOD_Application_Static_Scan_Options_Request | tr -d '\n' | sed -e 's/.*Status Code://')
-           
-          # Prints the status code of the POST Request
-          echo "Status code from the request of creation a FOD application: ${Static_Scan_Options_Request_Status_Code}"
 
           # Checks if the status code of the request is 200 if not it will end the workflow with an error
           if [[ $Static_Scan_Options_Request_Status_Code -eq 200 ]]; then
@@ -261,7 +258,6 @@ jobs:
             # Prints the response of the PUT Request as a parsed JSON (Failed Request)
             echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
             jq . save-sast-scan-options-output.json
-        
                 
             exit 1  # Exit with a non-zero status code to indicate failure
           fi 
