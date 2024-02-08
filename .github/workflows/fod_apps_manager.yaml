@@ -265,4 +265,4 @@ jobs:
         FOD_API_TOKEN: "${{ secrets.FOD_BEARER_TOKEN }}"
         FOD_USER: ${{ secrets.FOD_USER }}
         FOD_PAT: ${{ secrets.FOD_PAT }}
-        FOD_RELEASE_ID: ${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
+        FOD_RELEASE_ID: ${{ needs.FODAppManagement.outputs.releaseID }}
