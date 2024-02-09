@@ -169,6 +169,8 @@ jobs:
               # Extracts the applicationId values from the output JSON file
               APPID=$(cat "get-application-output.json" | jq -r '.applicationId')
 
+              echo "applicationId is: ${APPID}"
+
               # Sends an API Request with GET method to retrieve the information from the release related to the application from the repository and extracts the HTTP status code from the response
               Get_FOD_Release_by_AppId_Request=$(curl -X GET "${FOD_API_URL}/releases?filters=applicationId%3A${APPID}" \
                 -H "Authorization: Bearer ${FOD_API_TOKEN}" \
