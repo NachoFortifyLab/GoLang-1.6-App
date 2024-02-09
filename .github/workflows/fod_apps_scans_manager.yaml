@@ -167,7 +167,7 @@ jobs:
               echo "::set-output name=isFODAppExists::true"
 
               # Extracts the applicationId values from the output JSON file
-              APPID=$(cat "get-application-output.json" | jq -r '.applicationId')
+              APPID=$(cat "get-application-output.json" | jq -r '.items.applicationId')
 
               echo "applicationId is: ${APPID}"
 
