@@ -167,7 +167,7 @@ jobs:
               echo "::set-output name=isFODAppExists::true"
 
               # Extracts the applicationId values from the output JSON file
-              APPID=$(cat "get-application-output.json" | jq -r '.items.applicationId')
+              APPID=$(cat "get-application-output.json" | jq -r '.items[0].applicationId')
 
               echo "applicationId is: ${APPID}"
 
@@ -205,7 +205,7 @@ jobs:
                   echo "There is an application related to that applicationId in your Fortify On Demand Tenant"
 
                   # Extracts the releaseid value from the output JSON file of the Application Creation Request
-                  FOD_Release_ID=$(cat "get-release-output.json" | jq -r '.releaseId')
+                  FOD_Release_ID=$(cat "get-release-output.json" | jq -r '.items[0].releaseId')
               
                   # Saves the releaseid as the output of the current job for next job
                   echo "::set-output name=releaseID::$FOD_Release_ID"
