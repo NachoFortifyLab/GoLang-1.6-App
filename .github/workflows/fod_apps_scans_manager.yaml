@@ -272,8 +272,8 @@ jobs:
         REPO_API_URL="https://api.github.com/repos/${{ github.repository }}"
 
         # Sends a request to get the repository information
-        REPO_INFO=$(curl -s 
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $REPO_API_URL \
+        REPO_INFO=$(curl -s $REPO_API_URL
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -o "github-info-output.json") # Saves the results of the query to a file
           
         # Prints the response of the Repository Request as a parsed JSON
