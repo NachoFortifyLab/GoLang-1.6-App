@@ -11,19 +11,20 @@
 # Use this workflow template as a basis for integrating Fortify on Demand Static Application Security Testing (SAST) into your GitHub workflows.#
 # This template demonstrates the steps to check if an application exists in your Fortify On Demand Tenant, create it if it's not exists,        #
 # Configure the static scan options the application is new, prepare the code and dependencies, initiate a scan,                                 #
-# Download results once complete and import the results into GitHub Security Code Scanning Alerts.                                                          #                                      
+# Download results once complete and import the results into GitHub Security Code Scanning Alerts.                                              #                                      
 # Existing customers should review inputs and environment variables below to configure scanning against                                         #
 # an existing application in your Fortify on Demand tenant. Additional information is available in the comments throughout the workflow, the    #
-# documentation for the Fortify actions used, and the Fortify on Demand / ScanCentral Client product documentation. If you need additional      #
-# assistance with configuration, feel free to create a help ticket in the Fortify on Demand portal.                                             #
+# documentation for the Fortify actions used, and the Fortify on Demand / ScanCentral Client product documentation which is located at          #  
+# https://www.microfocus.com/documentation/fortify-on-demand/. If you need additional assistance with configuration,                            #
+# feel free to create a help ticket in the Fortify on Demand portal.                                                                            #
 #################################################################################################################################################
 
 name: Fortify On Demand Application and Scan Manager
 
-# TODO: Customize trigger events based on your DevSecOps processes and typical FOD SAST Scan time
-#   Workflow schedule documentation is located at https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onschedule
+# TODO: Customize trigger events based on your DevSecOps processes and typical FOD SAST Scan time.
+# Workflow schedule documentation is located at https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onschedule.
 on:
-  # Allows you to run this workflow manually
+  # Allows you to run this workflow manually.
   workflow_dispatch:
   push:
     branches: [ "main" ]
@@ -34,16 +35,26 @@ jobs:
   # FOD Application Management Job
   FOD-Application-Management:
     runs-on: ubuntu-latest
-    # Saves the data of the FOD Release ID and the boolean variable that checks the existance of the FOD application from this job to be used in the following jobs
+    # Saves the data of the FOD Release ID and a boolean variable that 
+    # checks the existance of the FOD application (returns false if an application with the repository name
+    # if is not found and returns true if the application exists) as output to be used in other jobs.
     outputs:
       FOD_Release_ID: ${{ steps.FODAppManagement.outputs.releaseID }}
       Is_FOD_APP_Exists: ${{ steps.FODAppManagement.outputs.isFODAppExists }}
       
     steps:
-    # Checks out the source code
+    # Checks out the source code.
     - name: Checks Out the Source Code
       uses: actions/checkout@v2
-
+      
+    # Checks if an application with the repository name exists in your FOD Tenant.
+    # if it not exists it will create the application, configure the SAST Scan options
+    # and then start the SAST Scan. If it exists it will start a SAST Scan directly after this job ends.
+    # TODO: Update data values from $Create_FOD_Application_Body (JSON file used as body for the creation of the new FOD application) based on the needs of your FOD application. Helpful hints:
+    #   Update ENV variables for your application and create the necessary GitHub Secrets before running the workflow at https://github.com/youraccount/yourrepo/settings/secrets/actions.
+    #   Credentials and Email should be obtained from your FOD tenant (either Personal Access Token or API Key can be used).
+    #   User ID should be obtained from a GET API request to get users list operation at https://api.ams.fortify.com/swagger/ui/index#!/Users/UsersV3_GetUsers.
+    #   Read fod_apps_scans_manager documentation for more details about how to update the values to be used in the JSON create application body.
     - name: Checks an application existance in FOD and Creates it if not exist in your FOD Tenant
       id: FODAppManagement
       run: |
@@ -63,10 +74,10 @@ jobs:
           Create_FOD_Application_Body=$(cat <<EOF
           {
             "applicationName": "$Repo_Name",
-            "applicationDescription": "Created by Fortify On Demand Application Manager GitHub workflow",
+            "applicationDescription": "Created by Fortify On Demand Application and Scan Manager GitHub workflow",
             "applicationType": "Web_Thick_Client",
             "releaseName": "1.0",
-            "releaseDescription": null,
+            "releaseDescription": "Created by Fortify On Demand Application and Scan Manager GitHub workflow",
             "emailList": "$FOD_EMAIL",
             "ownerId": $FOD_USER_ID,
             "attributes": [
@@ -242,16 +253,25 @@ jobs:
 
   # FOD SAST Scan Options Job
   FOD-SAST-Scan-Options:
+    # Indicates that this job requieres FOD Application Management Job to be completed in order to run.
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
+    # This job will run when the boolean variable that checks the existance of the FOD application returns false.
     if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
          
     steps:
-    # Checks out the source code
+    # Checks out the source code.
     - name: Checks Out the Source Code
       uses: actions/checkout@v2
 
-    - name:  Setups FOD Static Scan Options for the new Application created
+    # Setups FOD SAST Scan options such as Assessment Type, Entitlement, Technology Stack and Audit Preference
+    # TODO: Update data values from $Save_FOD_Application_Static_Scan_Options_Body (JSON file used as body for the set up the scan options of your FOD application) based on the needs of your FOD application. Helpful hints:
+    #   Update ENV variables for your application and create the necessary GitHub Secrets before running the workflow at https://github.com/youraccount/yourrepo/settings/secrets/actions
+    #   Credentials and Email should be obtained from your FOD tenant (either Personal Access Token or API Key can be used).
+    #   User ID should be obtained from a GET API request to get users list operation at https://api.ams.fortify.com/swagger/ui/index#!/Users/UsersV3_GetUsers.
+    #   FOD Release ID is obtained as output from the FOD Application Management Job.
+    #   Read fod_apps_scans_manager documentation for more details about how to update the values to be used in the JSON scan options from the application body.
+    - name:  Setups FOD Static Scan Options for the new Application created in your FOD Tenant
       id: FODAppSastScanOptions
       run: |
           # Sets up your Fortify on Demand API and Github requiered variables for this job
@@ -325,8 +345,13 @@ jobs:
   # FOD SAST Scan Job
   FOD-SAST-Scan:
     # Use the appropriate runner for building your source code.
-    # TODO: Use a Windows runner for .NET projects that use msbuild. Additional changes to RUN commands will be required to switch to Windows syntax.
+    # TODO: Use a Windows runner for .NET projects that use msbuild. 
+    #   Additional changes to RUN commands will be required to switch to Windows syntax.
     needs: FOD-Application-Management
+    # This job will run when the boolean variable that checks the existance of the FOD application 
+    # returns false or true and when FOD Application Management Job is completed successfully.
+    # In Summary this job will run when the first job is completed succesfully and when the FOD application
+    # exists previously or not.
     if: |
       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} ||
       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'true' }} &&
@@ -338,19 +363,34 @@ jobs:
       security-events: write
 
     steps:
-      # Checks out the source code 
+      # Checks out the source code.
       - name: Checks Out the Source Code
         uses: actions/checkout@v3
 
-      # Java is required to run the various Fortify utilities.
-      # When scanning a Java application, please use the Java version which you application is built.
+      # Gets Repo Languages (Technology Stack) 
+      - name: Get Repository Languages
+        id: repo-languages
+        run: |
+          GITHUB_REPO_API_URL="https://api.github.com/repos/${{ github.repository }}/languages"
+          REPO_LANGUAGES=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $GITHUB_REPO_API_URL)
+          echo "::set-output name=repo-languages::$REPO_LANGUAGES" # Saves the languages from the repository to be used in the next steps
+          
+      # Extracts and prints the Repository Languages  
+      - name: Extract and Print Repository Languages
+        run: |
+          echo "Repository Languages:"
+          echo "${{ steps.repo-languages.outputs.repo-languages }}" | jq -r 'to_entries[] | "\(.key): \(.value)"'
+
+      # Set ups Java because is required to run some Fortify utilities.
+      # When scanning a Java application, please make sure to use the Java version 
+      # which your application is built.
       - name: Set ups Java
         uses: actions/setup-java@v3
         with:
           java-version: 8
           distribution: 'temurin'
 
-      # Prepares source code and dependencies to be uploaded in FOD with ScanCentral Client. The default example is for a Maven project that uses pom.xml.
+      # Prepares source code and dependencies to be uploaded in FOD with ScanCentral Client.
       # TODO: Update PACKAGE_OPTS based on the ScanCentral Client documentation for your project's included tech stack(s). Helpful hints:
       #   ScanCentral Client will download dependencies for maven (-bt mvn) and gradle (-bt gradle).
       #   ScanCentral Client can download dependencies for msbuild projects (-bt msbuild); however, you must convert the workflow to use a Windows runner.
@@ -364,9 +404,11 @@ jobs:
         env:
           PACKAGE_OPTS: "-bt none"
 
-      # Starts Fortify on Demand SAST scan and wait until results completition. For more information on FOD Uploader commands, see https://github.com/fod-dev/fod-uploader-java
+      # Starts Fortify on Demand SAST Scan and wait until results completition. For more information on FOD Uploader commands, see https://github.com/fod-dev/fod-uploader-java
       # TODO: Update ENV variables for your application and create the necessary GitHub Secrets.  Helpful hints:
-      #   Credentials and release ID should be obtained from your FOD tenant (either Personal Access Token or API Key can be used).
+      #   Credentials and Email should be obtained from your FOD tenant (either Personal Access Token or API Key can be used).
+      #   FOD Tenant is the Tenant you use.
+      #   FOD Release ID is obtained as output from the FOD Application Management Job.
       #   Automated Audit preference should be configured for the release's Static Scan Settings in the Fortify on Demand portal.
       - name: Download Fortify on Demand Universal CI Tool
         uses: fortify/gha-setup-fod-uploader@6e6bb8a33cb476e240929fa8ebc739ff110e7433
@@ -380,9 +422,13 @@ jobs:
           FOD_PAT: ${{ secrets.FOD_PAT }}
           FOD_RELEASE_ID: ${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
           FOD_UPLOADER_OPTS: "-ep 2 -pp 0 -I 1 -apf"
-          FOD_UPLOADER_NOTES: 'Triggered by GitHub Actions (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})'
+          FOD_UPLOADER_NOTES: 'Triggered by Fortify On Demand Application and Scan Manager GitHub Action (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})'
 
-      # Once scan is completed, pull SAST issues from Fortify on Demand and generates SARIF output.
+      # Once scan is completed, pull SAST issues from Fortify on Demand and generates SARIF output with all the issues found.
+      # TODO: Update ENV variables for your application and create the necessary GitHub Secrets.  Helpful hints:
+      #   Credentials and Email should be obtained from your FOD tenant (either Personal Access Token or API Key can be used).
+      #   FOD Tenant is the Tenant you use.
+      #   FOD Release ID is obtained as output from the FOD Application Management Job.
       - name: Export results to GitHub-optimized SARIF
         uses: fortify/gha-export-vulnerabilities@fcb374411cff9809028c911dabb8b57dbdae623b
         with:
