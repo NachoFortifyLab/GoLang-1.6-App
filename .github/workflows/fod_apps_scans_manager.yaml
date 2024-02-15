@@ -74,10 +74,10 @@ jobs:
           Create_FOD_Application_Body=$(cat <<EOF
           {
             "applicationName": "$Repo_Name",
-            "applicationDescription": "Created by Fortify On Demand Application and Scan Manager GitHub workflow",
+            "applicationDescription": "Created by Fortify On Demand Application and Scan Manager GitHub workflow.",
             "applicationType": "Web_Thick_Client",
             "releaseName": "1.0",
-            "releaseDescription": "Created by Fortify On Demand Application and Scan Manager GitHub workflow",
+            "releaseDescription": "Created by Fortify On Demand Application and Scan Manager GitHub workflow.",
             "emailList": "$FOD_EMAIL",
             "ownerId": $FOD_USER_ID,
             "attributes": [
@@ -264,6 +264,29 @@ jobs:
     - name: Checks Out the Source Code
       uses: actions/checkout@v2
 
+    # Gets Repository information 
+    - name: Get Repository Info
+      id: repo-info
+      run: |
+        # Repository API URL
+        REPO_API_URL="https://api.github.com/repos/${{ github.repository }}"
+
+        # Sends a request to get the repository information
+        REPO_INFO=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $REPO_API_URL)
+
+        # Prints the response of the Repository Request as a parsed JSON
+        echo "GitHub API Request response saved to a JSON file. Showing the results from the query:"
+        echo "$REPO_INFO" | jq .
+
+        # Saves the repository information as the output of the current step to be used in next steps
+        echo "::set-output name=repo-info::$REPO_INFO"
+          
+    # Extracts and prints the Repository Languages from the repository info data
+    - name: Extract and Print Repository Languages
+      run: |
+        REPO_LANGUAGE=$(echo "${{ steps.repo-info.outputs.repo-info }}" | jq -r '.language')
+        echo "Repository Language: $REPO_LANGUAGE"
+
     # Setups FOD SAST Scan options such as Assessment Type, Entitlement, Technology Stack and Audit Preference
     # TODO: Update data values from $Save_FOD_Application_Static_Scan_Options_Body (JSON file used as body for the set up the scan options of your FOD application) based on the needs of your FOD application. Helpful hints:
     #   Update ENV variables for your application and create the necessary GitHub Secrets before running the workflow at https://github.com/youraccount/yourrepo/settings/secrets/actions
@@ -366,20 +389,6 @@ jobs:
       # Checks out the source code.
       - name: Checks Out the Source Code
         uses: actions/checkout@v3
-
-      # Gets Repo Languages (Technology Stack) 
-      - name: Get Repository Languages
-        id: repo-languages
-        run: |
-          GITHUB_REPO_API_URL="https://api.github.com/repos/${{ github.repository }}/languages"
-          REPO_LANGUAGES=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $GITHUB_REPO_API_URL)
-          echo "::set-output name=repo-languages::$REPO_LANGUAGES" # Saves the languages from the repository to be used in the next steps
-          
-      # Extracts and prints the Repository Languages  
-      - name: Extract and Print Repository Languages
-        run: |
-          echo "Repository Languages:"
-          echo "${{ steps.repo-languages.outputs.repo-languages }}" | jq -r 'to_entries[] | "\(.key): \(.value)"'
 
       # Set ups Java because is required to run some Fortify utilities.
       # When scanning a Java application, please make sure to use the Java version 
