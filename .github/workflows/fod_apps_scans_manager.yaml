@@ -264,29 +264,28 @@ jobs:
     - name: Checks Out the Source Code
       uses: actions/checkout@v2
 
-    # Gets Repository information 
-    - name: Get Repository Info
+    # Gets Repository information and extracts the language from the info data
+    - name: Get Repository Info and Extract the language of the repository
       id: repo-info
       run: |
         # Repository API URL
         REPO_API_URL="https://api.github.com/repos/${{ github.repository }}"
 
         # Sends a request to get the repository information
-        REPO_INFO=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $REPO_API_URL)
-
+        REPO_INFO=$(curl -s 
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $REPO_API_URL \
+          -o "github-info-output.json") # Saves the results of the query to a file
+          
         # Prints the response of the Repository Request as a parsed JSON
         echo "GitHub API Request response saved to a JSON file. Showing the results from the query:"
-        echo "$REPO_INFO" | jq .
+        jq . github-info-output.json
+
+        # Extracts the language or languages from the output JSON file
+        LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
 
         # Saves the repository information as the output of the current step to be used in next steps
-        echo "::set-output name=repo-info::$REPO_INFO"
-          
-    # Extracts and prints the Repository Languages from the repository info data
-    - name: Extract and Print Repository Languages
-      run: |
-        REPO_LANGUAGE=$(echo "${{ steps.repo-info.outputs.repo-info }}" | jq -r '.language')
-        echo "Repository Language: $REPO_LANGUAGE"
-
+        echo "::set-output name=Repo_Language::$LANGUAGE"
+        
     # Setups FOD SAST Scan options such as Assessment Type, Entitlement, Technology Stack and Audit Preference
     # TODO: Update data values from $Save_FOD_Application_Static_Scan_Options_Body (JSON file used as body for the set up the scan options of your FOD application) based on the needs of your FOD application. Helpful hints:
     #   Update ENV variables for your application and create the necessary GitHub Secrets before running the workflow at https://github.com/youraccount/yourrepo/settings/secrets/actions
