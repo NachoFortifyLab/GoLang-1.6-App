@@ -258,6 +258,11 @@ jobs:
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
     if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
+    # Saves the data of the FOD Release ID and a boolean variable that 
+    # checks the existance of the FOD application (returns false if an application with the repository name
+    # if is not found and returns true if the application exists) as output to be used in other jobs.
+    outputs:
+      Repo_Language: ${{ steps.RepoInfo.outputs.repo_language }}
          
     steps:
     # Checks out the source code.
@@ -266,7 +271,7 @@ jobs:
 
     # Gets Repository information and extracts the language from the info data
     - name: Get Repository Info and Extract the language of the repository
-      id: repo-info
+      id: RepoInfo
       run: |
         # Repository API URL
         REPO_API_URL="https://api.github.com/repos/${{ github.repository }}"
@@ -284,7 +289,7 @@ jobs:
         LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
 
         # Saves the repository information as the output of the current step to be used in next steps
-        echo "::set-output name=Repo_Language::$LANGUAGE"
+        echo "::set-output name=repo_language::$LANGUAGE"
         
     # Setups FOD SAST Scan options such as Assessment Type, Entitlement, Technology Stack and Audit Preference
     # TODO: Update data values from $Save_FOD_Application_Static_Scan_Options_Body (JSON file used as body for the set up the scan options of your FOD application) based on the needs of your FOD application. Helpful hints:
@@ -302,6 +307,7 @@ jobs:
           Repo_Name="${{ github.event.repository.name }}"
           FOD_USER_ID="${{ secrets.FOD_USER_ID }}"
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
+          Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
           FOD_RELEASE_ID=${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
           
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
@@ -314,7 +320,7 @@ jobs:
             "entitlementFrequencyType": 2,
             "releaseId": $FOD_Release_ID,
             "technologyStackId": 22,
-            "technologyStack": "Go",
+            "technologyStack": "$Repo_Language",
             "languageLevelId": null,
             "languageLevel": null,
             "performOpenSourceAnalysis": false,
