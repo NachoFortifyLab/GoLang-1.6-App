@@ -32,8 +32,50 @@ on:
    # - cron: '27 17 * * 2'
 
 jobs:
+  # Get GitHub Repository Data Job
+  Get-GitHub-Repo-Information:
+    runs-on: ubuntu-latest
+    # Saves the data of the repository language of the repository
+    outputs:
+      Repo_Language: ${{ steps.RepoInfo.outputs.repo_language }}
+
+    steps:
+    # Checks out the source code.
+    - name: Checks Out the Source Code
+      uses: actions/checkout@v2
+
+    # Gets Repository information and extracts the language from the info data
+    - name: Gets the GitHub repo information and extracts the language of the repository
+      id: RepoInfo
+      run: |
+        # Repository API URL
+        REPO_API_URL="https://api.github.com/repos/${{ github.repository }}"
+
+        # Sends a request to get the repository information
+        Get_Repo_Information_Request=$(curl -s $REPO_API_URL \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -w "%{http_code}" \
+          -o "github-info-output.json") # Saves the results of the query to a file
+
+        echo "API Request was successful."
+
+        # Saves the GitHub request's status code
+        Get_Repo_Information_Request_Status_Code=$(echo $Get_Repo_Information_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+          
+        # Prints the response of the GitHub Request as a parsed JSON
+        echo "GitHub API Request response saved to a JSON file. Showing the results from the query:"
+        jq . github-info-output.json
+
+        # Extracts the language or languages from the output JSON file
+        LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
+
+        # Saves the repository information as the output of the current step to be used in next steps
+        echo "::set-output name=repo_language::$LANGUAGE"
+        
   # FOD Application Management Job
   FOD-Application-Management:
+    # Indicates that this job requieres Get GitHub Repository Data Job to be completed in order to run.
+    needs: Get-GitHub-Repo-Information
     runs-on: ubuntu-latest
     # Saves the data of the FOD Release ID and a boolean variable that 
     # checks the existance of the FOD application (returns false if an application with the repository name
@@ -55,7 +97,7 @@ jobs:
     #   Credentials and Email should be obtained from your FOD tenant (either Personal Access Token or API Key can be used).
     #   User ID should be obtained from a GET API request to get users list operation at https://api.ams.fortify.com/swagger/ui/index#!/Users/UsersV3_GetUsers.
     #   Read fod_apps_scans_manager documentation for more details about how to update the values to be used in the JSON create application body.
-    - name: Checks an application existance in FOD and Creates it if not exist in your FOD Tenant
+    - name: Checks an application existance in FOD and Creates it if not exist
       id: FODAppManagement
       run: |
           # Sets up your Fortify on Demand API and Github requiered variables for this job
@@ -258,38 +300,11 @@ jobs:
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
     if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
-    # Saves the data of the FOD Release ID and a boolean variable that 
-    # checks the existance of the FOD application (returns false if an application with the repository name
-    # if is not found and returns true if the application exists) as output to be used in other jobs.
-    outputs:
-      Repo_Language: ${{ steps.RepoInfo.outputs.repo_language }}
          
     steps:
     # Checks out the source code.
     - name: Checks Out the Source Code
       uses: actions/checkout@v2
-
-    # Gets Repository information and extracts the language from the info data
-    - name: Get Repository Info and Extract the language of the repository
-      id: RepoInfo
-      run: |
-        # Repository API URL
-        REPO_API_URL="https://api.github.com/repos/${{ github.repository }}"
-
-        # Sends a request to get the repository information
-        REPO_INFO=$(curl -s $REPO_API_URL \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -o "github-info-output.json") # Saves the results of the query to a file
-          
-        # Prints the response of the Repository Request as a parsed JSON
-        echo "GitHub API Request response saved to a JSON file. Showing the results from the query:"
-        jq . github-info-output.json
-
-        # Extracts the language or languages from the output JSON file
-        LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
-
-        # Saves the repository information as the output of the current step to be used in next steps
-        echo "::set-output name=repo_language::$LANGUAGE"
         
     # Setups FOD SAST Scan options such as Assessment Type, Entitlement, Technology Stack and Audit Preference
     # TODO: Update data values from $Save_FOD_Application_Static_Scan_Options_Body (JSON file used as body for the set up the scan options of your FOD application) based on the needs of your FOD application. Helpful hints:
@@ -298,7 +313,7 @@ jobs:
     #   User ID should be obtained from a GET API request to get users list operation at https://api.ams.fortify.com/swagger/ui/index#!/Users/UsersV3_GetUsers.
     #   FOD Release ID is obtained as output from the FOD Application Management Job.
     #   Read fod_apps_scans_manager documentation for more details about how to update the values to be used in the JSON scan options from the application body.
-    - name:  Setups FOD Static Scan Options for the new Application created in your FOD Tenant
+    - name:  Setups FOD Static Scan Options for the new Application created
       id: FODAppSastScanOptions
       run: |
           # Sets up your Fortify on Demand API and Github requiered variables for this job
@@ -378,7 +393,7 @@ jobs:
     needs: FOD-Application-Management
     # This job will run when the boolean variable that checks the existance of the FOD application 
     # returns false or true and when FOD Application Management Job is completed successfully.
-    # In Summary this job will run when the first job is completed succesfully and when the FOD application
+    # In Summary this job will run when the FOD Application Management Job is completed succesfully and when the FOD application
     # exists previously or not.
     if: |
       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} ||
