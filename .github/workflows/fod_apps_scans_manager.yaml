@@ -44,8 +44,8 @@ jobs:
     - name: Checks Out the Source Code
       uses: actions/checkout@v2
 
-    # Gets Repository information and extracts the language from the info data
-    - name: Gets the GitHub repo information and extracts the language of the repository
+    # Gets Repository information and extracts the language from the repository info data
+    - name: Gets GitHub repo information and extracts the language used in the repository
       id: RepoInfo
       run: |
         # Repository API URL
@@ -400,6 +400,8 @@ jobs:
       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'true' }} &&
       ${{ needs.FOD-Application-Management.result == 'success'  }}
     runs-on: ubuntu-latest
+    outputs:
+      Java_Version: ${{ steps.DefinesRepoTechStack.outputs.javaVersion }}
     permissions:
       actions: read
       contents: read
@@ -410,6 +412,48 @@ jobs:
       - name: Checks Out the Source Code
         uses: actions/checkout@v3
 
+      - name: Defines Repository TechnologyStack
+        id: DefinesRepoTechStack
+        run: |
+            # Sets up your Github requiered variables for this step
+            Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
+
+            # Checks if the language of the repository is Java
+            if [[ "$Repo_Language" != "Java" ]]; then
+              echo "::set-output name=javaVersion::8"
+              
+            else
+              
+            fi
+
+      # Defines java version and packages options    
+      - name: "Read Java Info"
+        id: "java_info"
+        uses: YunaBraska/java-info-action@main
+
+        # Configurations (Optional)
+        with:
+          deep: '-1'
+          work-dir: '.'
+          jv-fallback: 17
+          pv-fallback: '0.0.1'
+          pe-fallback: 'utf-8'
+          custom-gradle-cmd: "clean build"
+          custom-maven-cmd: "clean package"
+
+      # PRINT
+      - name: "Print Java Version"
+        run: |
+            echo "java_version                     [${{ steps.java_info.outputs.java_version }}]"
+            echo "artifact_name                    [${{ steps.java_info.outputs.artifact_name }}]"
+            echo "project_version                  [${{ steps.java_info.outputs.project_version }}]"
+            echo "project_encoding                 [${{ steps.java_info.outputs.project_encoding }}]"
+            echo "cmd_custom                       [${{ steps.java_info.outputs.cmd_custom }}]"
+            echo "is_gradle                        [${{ steps.java_info.outputs.is_gradle }}]"
+            echo "is_maven                         [${{ steps.java_info.outputs.is_maven }}]"
+            echo "has_wrapper                      [${{ steps.java_info.outputs.has_wrapper }}]"
+            echo "builder_name                     [${{ steps.java_info.outputs.builder_name }}]"
+       
       # Set ups Java because is required to run some Fortify utilities.
       # When scanning a Java application, please make sure to use the Java version 
       # which your application is built.
