@@ -45,7 +45,7 @@ jobs:
       uses: actions/checkout@v2
 
     # Gets Repository information and extracts the language from the repository info data
-    - name: Gets GitHub repo information and extracts the language used in the repository
+    - name: Gets repository information and extracts the language used in the repository
       id: RepoInfo
       run: |
         # Repository API URL
@@ -412,13 +412,87 @@ jobs:
       - name: Checks Out the Source Code
         uses: actions/checkout@v3
 
-      - name: Defines Repository TechnologyStack
+      - name: Defines Repository Technology Stack
         id: DefinesRepoTechStack
         run: |
             # Sets up your Github requiered variables for this step
             Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
 
-            # Checks if the language of the repository is Java
+            # Checks which is the language of the code from the repository
+            case "$Repo_Language" in
+              "C#")
+                echo "The technology Stack from the repository is .Net/.Net Core/ASP"
+
+                
+                ;;
+              "ABAP")
+                echo "The technology Stack from the repository is ABAP"
+                ;;
+              "Apex"
+                echo "The technology Stack from the repository is Apex/VisualForce"
+                ;;
+              "ColdFusion")
+                echo "The technology Stack from the repository is CFML"
+                ;;
+              "COBOL")
+                echo "The technology Stack from the repository is COBOL"
+                ;;
+              "Dart"
+                echo "The technology Stack from the repository is Dart/Flutter"
+                ;;
+              "Go"
+                echo "The technology Stack from the repository is Go"
+                ;;
+              "Dockerfile"
+                echo "The technology Stack from the repository is Infrastructure-As-Code/Dockerfile"
+                ;;
+              "Java"
+                echo "The technology Stack from the repository is Java/J2EE/Kotlin"
+                ;;
+              "Kotlin"
+                echo "The technology Stack from the repository is Java/J2EE/Kotlin"
+                ;;
+              "HTML"
+                echo "The technology Stack from the repository is JS/TS/HTML"
+                ;;
+              "JavaScript"
+                echo "The technology Stack from the repository is JS/TS/HTML"
+                 ;;
+              "TypeScript"
+                echo "The technology Stack from the repository is JS/TS/HTML"
+                ;;
+              "C"
+                echo "The technology Stack from the repository is MBS/C/C++/Scala"
+                ;;
+              "C++"
+                echo "The technology Stack from the repository is MBS/C/C++/Scala"
+                ;;
+              "Scala"
+                echo "The technology Stack from the repository is MBS/C/C++/Scala"
+                ;;
+              "PHP"
+                echo "The technology Stack from the repository is PHP"
+                ;;
+              "Python"
+                echo "The technology Stack from the repository is Python"
+                ;;
+              "Ruby"
+                echo "The technology Stack from the repository is Ruby"
+                ;;
+              "Solidity"
+                echo "The technology Stack from the repository is Solidity"
+                ;;
+              "Visual Basic 6.0"
+                echo "The technology Stack from the repository is VB6"
+                ;;
+              "VBScript"
+                echo "The technology Stack from the repository is VBScript"
+                ;;
+              *)
+                echo "Unknown fruit."
+                ;;
+            esac
+            
             if [[ "$Repo_Language" != "Java" ]]; then
               echo "::set-output name=javaVersion::8"
               
