@@ -72,8 +72,8 @@ jobs:
         # Saves the repository information as the output of the current step to be used in next steps
         echo "::set-output name=repo_language::$LANGUAGE"
         
-  # Sets Up Java Information Job
-  Set-Up-Java-Information:
+  # Defines Java Configuration Job
+  Define-Java-Configuration:
     # Indicates that this job requieres Get GitHub Repository Data Job to be completed in order to run.
     needs: Get-GitHub-Repo-Information
     runs-on: ubuntu-latest
@@ -81,9 +81,7 @@ jobs:
       Java_Version: ${{ steps.java_info.outputs.java_version }}
       Is_Gradle: ${{ steps.java_info.outputs.is_gradle }}
       Is_Maven: ${{ steps.java_info.outputs.is_maven }}
-      Has_Wrapper: ${{ steps.java_info.outputs.has_wrapper }}
       Builder_Name: ${{ steps.java_info.outputs.builder_name }}
-      
     # This job will run when language of the repository is Java
     if: ${{ needs.RepoInfo.outputs.Repo_Language == "Java" }}
 
@@ -139,8 +137,6 @@ jobs:
       run: |
           # Sets up your Github requiered variables for this step
           Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
-          Java_Version=${{ steps.java_info.outputs.java_version }}
-          Builder_Name=${{ steps.java_info.outputs.builder_name }}
 
           # Checks which is the language of the code from the repository
           case "$Repo_Language" in
@@ -266,12 +262,20 @@ jobs:
               ;;
             "Java"
               echo "The technology Stack from the repository is Java/J2EE/Kotlin"
+              
+              # Gets and Saves the Java Info from the Defines Java Configuration Job 
+              Java_Version=${{ steps.java_info.outputs.java_version }}
+              Is_Gradle=${{ steps.java_info.outputs.is_gradle }}
+              Is_Maven=${{ steps.java_info.outputs.is_maven }}
+              Builder_Name=${{ steps.java_info.outputs.builder_name }}
 
               # Sets technology stack id variable related to the technology stack of the repository
               echo "::set-output name=tech_stack_id::7"
               
               # Sets technology stack variable dynamically related to the technology stack of the repository
               echo "::set-output name=tech_stack::JAVA/J2EE/Kotlin"
+
+              
 
               # Sets language level id variable related to the technology stack of the repository
               echo "::set-output name=language_level_id::9"
