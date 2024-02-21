@@ -123,8 +123,8 @@ jobs:
     outputs:
       Technology_Stack_ID: ${{ steps.DefinesFODAppTechStack.outputs.tech_stack_id }}
       Technology_Stack: ${{ steps.DefinesFODAppTechStack.outputs.tech_stack }}
-      Languale_Level_ID: ${{ steps.DefinesFODAppTechStack.outputs.language_level_id }}
-      Languale_Level: ${{ steps.DefinesFODAppTechStack.outputs.language_level }}
+      Language_Level_ID: ${{ steps.DefinesFODAppTechStack.outputs.language_level_id }}
+      Language_Level: ${{ steps.DefinesFODAppTechStack.outputs.language_level }}
 
     steps:
     # Checks out the source code.
@@ -137,6 +137,7 @@ jobs:
       run: |
           # Sets up your Github requiered variables for this step
           Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
+          Java_Version=${{ needs.java_info.outputs.java_version }}
 
           # Checks which is the language of the code from the repository
           case "$Repo_Language" in
@@ -262,12 +263,6 @@ jobs:
               ;;
             "Java"
               echo "The technology Stack from the repository is Java/J2EE/Kotlin"
-              
-              # Gets and Saves the Java Info from the Defines Java Configuration Job 
-              Java_Version=${{ steps.java_info.outputs.java_version }}
-              Is_Gradle=${{ steps.java_info.outputs.is_gradle }}
-              Is_Maven=${{ steps.java_info.outputs.is_maven }}
-              Builder_Name=${{ steps.java_info.outputs.builder_name }}
 
               # Sets technology stack id variable related to the technology stack of the repository
               echo "::set-output name=tech_stack_id::7"
@@ -275,29 +270,149 @@ jobs:
               # Sets technology stack variable dynamically related to the technology stack of the repository
               echo "::set-output name=tech_stack::JAVA/J2EE/Kotlin"
 
-              
+              case "$Java_Version" in
+                "6")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::9"
 
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::9"
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::1.6"
+                  ;;
+                "8")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::12"
 
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::1.6"
-              ;;
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::1.8"
+                  ;;
+                "9")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::17"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::1.9"
+                  ;;
+                "10")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::19"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::10"
+                  ;;
+                "11")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::20"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::11"
+                  ;;
+                "12")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::21"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::12"
+                  ;;
+                "13")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::22"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::13"
+                  ;;
+                "14")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::31"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::14"
+                  ;;
+                "17")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::34"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::17"
+                  ;;
+                *)
+                  echo "Java version $Java_Version not found in Fortify On Demand"
+                  ;;
+              esac
             "Kotlin"
-              echo "The technology Stack from the repository is Java/J2EE/Kotlin"
-
               # Sets technology stack id variable related to the technology stack of the repository
               echo "::set-output name=tech_stack_id::7"
               
               # Sets technology stack variable dynamically related to the technology stack of the repository
               echo "::set-output name=tech_stack::JAVA/J2EE/Kotlin"
 
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::9"
+              case "$Java_Version" in
+                "6")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::9"
 
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::1.6"
-              ;;
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::1.6"
+                  ;;
+                "8")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::12"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::1.8"
+                  ;;
+                "9")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::17"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::1.9"
+                  ;;
+                "10")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::19"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::10"
+                  ;;
+                "11")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::20"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::11"
+                  ;;
+                "12")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::21"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::12"
+                  ;;
+                "13")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::22"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::13"
+                  ;;
+                "14")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::31"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::14"
+                  ;;
+                "17")
+                  # Sets language level id variable related to the technology stack of the repository
+                  echo "::set-output name=language_level_id::34"
+
+                  # Sets language level variable related to the technology stack of the repository
+                  echo "::set-output name=language_level::17"
+                  ;;
+                *)
+                  echo "Java version $Java_Version not found in Fortify On Demand"
+                  ;;
+              esac
             "HTML"
               echo "The technology Stack from the repository is JS/TS/HTML"
 
@@ -735,7 +850,11 @@ jobs:
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
           Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
           FOD_RELEASE_ID=${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
-          
+          Technology_Stack_ID: ${{ needs.DefinesFODAppTechStack.outputs.tech_stack_id }}
+          Technology_Stack: ${{ needs.DefinesFODAppTechStack.outputs.tech_stack }}
+          Language_Level_ID: ${{ needs.DefinesFODAppTechStack.outputs.language_level_id }}
+          Language_Level: ${{ needs.DefinesFODAppTechStack.outputs.language_level }}
+
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
 
           # Creates a JSON file to be used as body for the Set Up of the SAST Scan options 
