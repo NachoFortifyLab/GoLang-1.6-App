@@ -77,13 +77,14 @@ jobs:
     # Indicates that this job requieres Get GitHub Repository Data Job to be completed in order to run.
     needs: Get-GitHub-Repo-Information
     runs-on: ubuntu-latest
+    # This job will run when language of the repository is Java
+    if: ${{ needs.RepoInfo.outputs.Repo_Language == "Java" }}
     outputs:
       Java_Version: ${{ steps.java_info.outputs.java_version }}
       Is_Gradle: ${{ steps.java_info.outputs.is_gradle }}
       Is_Maven: ${{ steps.java_info.outputs.is_maven }}
       Builder_Name: ${{ steps.java_info.outputs.builder_name }}
-    # This job will run when language of the repository is Java
-    if: ${{ needs.RepoInfo.outputs.Repo_Language == "Java" }}
+    
 
     steps:
     # Checks out the source code.
