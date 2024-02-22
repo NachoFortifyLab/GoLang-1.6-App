@@ -973,9 +973,11 @@ jobs:
       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'true' }} &&
       ${{ needs.FOD-Application-Management.result == 'success'  }}
     runs-on: ubuntu-latest
-    # Saves the data of the Java version and builder 
+    # Saves the data of the Java version to be used on FOD SAST Scan 
+    # and the builder related to the repository language
     outputs:
-      Repo_Java_Version: ${{ steps.RepoLanguageChecker.outputs.repo_java_version }}
+      Sast_Scan_Java_Version: ${{ steps.RepoLanguageChecker.outputs.sast_scan_java_version }}
+      Repo_Package_Build: ${{ steps.RepoLanguageChecker.outputs.repo_package_build }}
     permissions:
       actions: read
       contents: read
@@ -986,9 +988,9 @@ jobs:
       - name: Checks Out the Source Code
         uses: actions/checkout@v3
 
-      # Verifies if the repository language is Java and if the builder is gradle or maven
-      - name: Checks if the Repository Language is Java and the java builder
-        id: RepoLanguageChecker
+      # Verifies if the repository language and the builder package
+      - name: Checks the Repository Language and the package builder
+        id: RepoLanguagePackageChecker
         run: |
             # Sets up your Github requiered variables for this step
             Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
@@ -998,12 +1000,51 @@ jobs:
             Builder_Name=${{ needs.java_info.outputs.builder_name }}
 
             # Checks if the repository language is Java
-            if [[ $Repo_Language == "Java" ]]; then
-              echo "Java version is $Java Version"
-              echo "::set-output name=repo_java_version::$Java Version"
-              if [[ ]]; then
-            else
-              Java_Version == 8
+            case "$Repo_Language" in
+              "Java")
+                echo "Repository language is: Java"
+                
+                echo "Java version is $Java Version"
+
+                echo "::set-output name=sast_scan_java_version::$Java Version"
+
+                if [[ $Is_Gradle == 'true' || $Builder_Name == "Gradle" ]]; then
+                  echo "the Java application has Gradle build"
+                
+                  echo "::set-output name=repo_package_build::gradle"
+                elif [[ $Is_Maven == "true" || $Builder_Name == "Maven" ]]; then
+                  echo "the Java application has Maven build"
+                
+                  echo "::set-output name=repo_package_build::mvn"
+                else 
+                  echo "the Java appplication has an unknown java build or has not any build at all"
+                
+                  echo "::set-output name=repo_package_build::none"
+                fi
+                ;;
+              "Python")
+                echo "Repository language is: Python"
+                
+                echo "::set-output name=repo_java_version::8"
+              
+                echo "::set-output name=repo_package_build::none"
+                ;;
+              "C#")
+                echo "Repository language is: .NET"
+
+                echo "::set-output name=repo_java_version::8"
+              
+                echo "::set-output name=repo_package_build::none"
+                ;;
+              *)
+                echo "Repository language is not C#, Java or Python"
+                ;;
+            esac
+
+            if [[ $Repo_Language !== "Java"|| $Repo_Language !== "Python" || $Repo_Language !== "C#" ]]; then
+              echo "::set-output name=repo_java_version::8"
+              
+              echo "::set-output name=repo_package_build::none"
             fi
        
       # Set ups Java because is required to run some Fortify utilities.
@@ -1012,10 +1053,10 @@ jobs:
       - name: Set ups Java
         uses: actions/setup-java@v3
         with:
-          java-version: 8
+          java-version: $Sast_Scan_Java_Version
           distribution: 'temurin'
         env:
-          Java_Version: ${{ needs.java_info.outputs.java_version }} 
+          Sast_Scan_Java_Version: ${{ needs.RepoLanguagePackageChecker.outputs.sast_scan_java_version }} 
 
       # Prepares source code and dependencies to be uploaded in FOD with ScanCentral Client.
       # TODO: Update PACKAGE_OPTS based on the ScanCentral Client documentation for your project's included tech stack(s). Helpful hints:
@@ -1029,7 +1070,8 @@ jobs:
       - name: Package Code + Dependencies
         run: scancentral package $PACKAGE_OPTS -o package.zip
         env:
-          PACKAGE_OPTS: "-bt none"
+          Repo_Package_Build: ${{ needs.RepoLanguagePackageChecker.outputs.repo_package_build }}
+          PACKAGE_OPTS: "-bt $Repo_Package_Build"
 
       # Starts Fortify on Demand SAST Scan and wait until results completition. For more information on FOD Uploader commands, see https://github.com/fod-dev/fod-uploader-java
       # TODO: Update ENV variables for your application and create the necessary GitHub Secrets.  Helpful hints:
