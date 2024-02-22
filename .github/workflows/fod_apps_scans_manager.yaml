@@ -155,6 +155,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::2.0"
+
+              echo the FOD application will have the technology stack $Repo_Language version 2.0
               ;;
             "ABAP")
               echo "The technology Stack from the repository is ABAP"
@@ -170,6 +172,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "Apex"
               echo "The technology Stack from the repository is Apex/VisualForce"
@@ -185,6 +189,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "ColdFusion")
               echo "The technology Stack from the repository is CFML (ColdFusion)"
@@ -215,6 +221,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "Dart"
               echo "The technology Stack from the repository is Dart/Flutter"
@@ -230,6 +238,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "Go"
               echo "The technology Stack from the repository is Go"
@@ -245,6 +255,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "Dockerfile"
               echo "The technology Stack from the repository is Infrastructure-As-Code/Dockerfile"
@@ -260,6 +272,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language version
               ;;
             "Java"
               echo "The technology Stack from the repository is Java/J2EE/Kotlin"
@@ -337,6 +351,8 @@ jobs:
                 *)
                   echo "Java version $Java_Version not found in Fortify On Demand"
                   ;;
+                  
+                echo the FOD application will have the technology stack $Repo_Language version $Java_Version 
               esac
             "Kotlin"
               # Sets technology stack id variable related to the technology stack of the repository
@@ -412,6 +428,8 @@ jobs:
                 *)
                   echo "Java version $Java_Version not found in Fortify On Demand"
                   ;;
+                  
+                echo the FOD application will have the technology stack $Repo_Language version $Java_Version  
               esac
             "HTML"
               echo "The technology Stack from the repository is JS/TS/HTML"
@@ -427,6 +445,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "JavaScript"
               echo "The technology Stack from the repository is JS/TS/HTML"
@@ -442,6 +462,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "TypeScript"
               echo "The technology Stack from the repository is JS/TS/HTML"
@@ -457,6 +479,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "C"
               echo "The technology Stack from the repository is MBS/C/C++/Scala"
@@ -472,6 +496,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "C++"
               echo "The technology Stack from the repository is MBS/C/C++/Scala"
@@ -487,6 +513,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "Scala"
               echo "The technology Stack from the repository is MBS/C/C++/Scala"
@@ -502,6 +530,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "PHP"
               echo "The technology Stack from the repository is PHP"
@@ -517,6 +547,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "Python"
               echo "The technology Stack from the repository is Python"
@@ -532,6 +564,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::2"
+
+              echo the FOD application will have the technology stack $Repo_Language version 2
               ;;
             "Ruby"
               echo "The technology Stack from the repository is Ruby"
@@ -547,6 +581,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "Solidity"
               echo "The technology Stack from the repository is Solidity"
@@ -562,6 +598,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "Visual Basic 6.0"
               echo "The technology Stack from the repository is Visual Basic 6.0"
@@ -577,6 +615,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             "VBScript"
               echo "The technology Stack from the repository is Visual Basic Script"
@@ -592,6 +632,8 @@ jobs:
 
               # Sets language level variable related to the technology stack of the repository
               echo "::set-output name=language_level::null"
+
+              echo the FOD application will have the technology stack $Repo_Language
               ;;
             *)
               echo "Unknown Language."
@@ -864,10 +906,10 @@ jobs:
             "entitlementId": 12880,
             "entitlementFrequencyType": 2,
             "releaseId": $FOD_Release_ID,
-            "technologyStackId": 22,
-            "technologyStack": "$Repo_Language",
-            "languageLevelId": null,
-            "languageLevel": null,
+            "technologyStackId": $Technology_Stack_ID,
+            "technologyStack": "$Technology_Stack",
+            "languageLevelId": $Language_Level_ID,
+            "languageLevel": $Language_Level,
             "performOpenSourceAnalysis": false,
             "auditPreferenceType": 2,
             "includeThirdPartyLibraries": false
@@ -920,6 +962,7 @@ jobs:
     # Use the appropriate runner for building your source code.
     # TODO: Use a Windows runner for .NET projects that use msbuild. 
     #   Additional changes to RUN commands will be required to switch to Windows syntax.
+    # Indicates that this job requieres FOD Application Management Job to be completed in order to run.
     needs: FOD-Application-Management
     # This job will run when the boolean variable that checks the existance of the FOD application 
     # returns false or true and when FOD Application Management Job is completed successfully.
@@ -930,6 +973,9 @@ jobs:
       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'true' }} &&
       ${{ needs.FOD-Application-Management.result == 'success'  }}
     runs-on: ubuntu-latest
+    # Saves the data of the Java version and builder 
+    outputs:
+      Repo_Java_Version: ${{ steps.RepoLanguageChecker.outputs.repo_java_version }}
     permissions:
       actions: read
       contents: read
@@ -939,6 +985,26 @@ jobs:
       # Checks out the source code.
       - name: Checks Out the Source Code
         uses: actions/checkout@v3
+
+      # Verifies if the repository language is Java and if the builder is gradle or maven
+      - name: Checks if the Repository Language is Java and the java builder
+        id: RepoLanguageChecker
+        run: |
+            # Sets up your Github requiered variables for this step
+            Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
+            Java_Version=${{ needs.java_info.outputs.java_version }}
+            Is_Gradle=${{ needs.java_info.outputs.is_gradle }}
+            Is_Maven=${{ needs.java_info.outputs.is_maven }}
+            Builder_Name=${{ needs.java_info.outputs.builder_name }}
+
+            # Checks if the repository language is Java
+            if [[ $Repo_Language == "Java" ]]; then
+              echo "Java version is $Java Version"
+              echo "::set-output name=repo_java_version::$Java Version"
+              if [[ ]]; then
+            else
+              Java_Version == 8
+            fi
        
       # Set ups Java because is required to run some Fortify utilities.
       # When scanning a Java application, please make sure to use the Java version 
@@ -948,6 +1014,8 @@ jobs:
         with:
           java-version: 8
           distribution: 'temurin'
+        env:
+          Java_Version: ${{ needs.java_info.outputs.java_version }} 
 
       # Prepares source code and dependencies to be uploaded in FOD with ScanCentral Client.
       # TODO: Update PACKAGE_OPTS based on the ScanCentral Client documentation for your project's included tech stack(s). Helpful hints:
