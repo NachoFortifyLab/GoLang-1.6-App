@@ -69,8 +69,6 @@ jobs:
         # Extracts the language or languages from the output JSON file
         LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
 
-        echo "$LANGUAGE"
-
         # Saves the repository information as the output of the current step to be used in next steps
         echo "::set-output name=repo_language::$LANGUAGE"
         
@@ -140,6 +138,8 @@ jobs:
           # Sets up your Github requiered variables for this step
           Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
           Java_Version=${{ needs.java_info.outputs.java_version }}
+
+          echo "$Repo_Language"
 
           # Checks if the repositroy language is not Java or C# or Python
           if [[ $Repo_Language != 'Java' || $Repo_Language != 'C#' || $Repo_Language != 'Python' ]]; then
@@ -279,18 +279,12 @@ jobs:
                 ;;
               *)
                 echo "Language not found on Fortify On Demand"
-
-                # Sets technology stack id variable related to the technology stack of the repository
-                echo "::set-output name=tech_stack_id::null"
               
                 # Sets technology stack variable dynamically related to the technology stack of the repository
-                echo "::set-output name=tech_stack::"""
-                
-                # Sets language level id variable related to the technology stack of the repository
-                echo "::set-output name=language_level_id::null"
+                echo "::set-output name=tech_stack::"
                 
                 # Sets language level variable related to the technology stack of the repository
-                echo "::set-output name=language_level::"""
+                echo "::set-output name=language_level::"
                 ;;
             esac
           else
