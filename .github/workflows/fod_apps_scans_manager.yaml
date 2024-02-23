@@ -281,7 +281,7 @@ jobs:
               *)
                 echo "Language not found on Fortify On Demand technology stack options"
 
-                Sets unknown technology stack variable dynamically to value true 
+                # Sets unknown technology stack variable dynamically to value true 
                 echo "::set-output name=unknow_tech_stack::true"
                 ;;
             esac
