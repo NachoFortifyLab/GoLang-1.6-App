@@ -281,10 +281,10 @@ jobs:
                 echo "Language not found on Fortify On Demand"
               
                 # Sets technology stack variable dynamically related to the technology stack of the repository
-                echo "::set-output name=tech_stack::"
+                echo "::set-output name=tech_stack:: "
                 
                 # Sets language level variable related to the technology stack of the repository
-                echo "::set-output name=language_level::"
+                echo "::set-output name=language_level:: "
                 ;;
             esac
           else
