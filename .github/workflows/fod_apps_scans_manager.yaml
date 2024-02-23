@@ -70,7 +70,7 @@ jobs:
         LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
 
         # Saves the repository information as the output of the current step to be used in next steps
-        echo "::set-output name=repo_language::"$LANGUAGE""
+        echo "::set-output name=repo_language::$LANGUAGE"
         
   # Defines Java Configuration Job
   Define-Java-Configuration:
@@ -83,7 +83,7 @@ jobs:
       Is_Maven: ${{ steps.java_info.outputs.is_maven }}
       Builder_Name: ${{ steps.java_info.outputs.builder_name }}
     # This job will run when language of the repository is Java
-    if: ${{ needs.RepoInfo.outputs.Repo_Language == 'Java' }}
+    if: ${{ needs.Get-GitHub-Repo-Information.outputs.Repo_Language == 'Java' }}
     
     steps:
     # Checks out the source code.
@@ -125,6 +125,7 @@ jobs:
       Technology_Stack: ${{ steps.DefinesFODAppTechStackVersions.outputs.tech_stack }}
       Language_Level_ID: ${{ steps.DefinesFODAppTechStackVersions.outputs.language_level_id }}
       Language_Level_: ${{ steps.DefinesFODAppTechStackVersions.outputs.language_level }}
+      Unknown_Technology_Stack: ${{ steps.DefinesFODAppTechStackVersions.outputs.unknow_tech_stack }}
 
     steps:
     # Checks out the source code.
@@ -136,10 +137,10 @@ jobs:
       id: DefinesFODAppTechStack
       run: |
           # Sets up your Github requiered variables for this step
-          Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
-          Java_Version=${{ needs.java_info.outputs.java_version }}
+          Repo_Language=${{ needs.sadads.outputs.Repo_Language }}
+          Java_Version=${{ needs.Define-Java-Configuration.outputs.java_version }}
 
-          echo "$Repo_Language"
+          echo "Repository language is: $Repo_Language"
 
           # Checks if the repositroy language is not Java or C# or Python
           if [[ $Repo_Language != 'Java' || $Repo_Language != 'C#' || $Repo_Language != 'Python' ]]; then
@@ -279,6 +280,9 @@ jobs:
                 ;;
               *)
                 echo "Language not found on Fortify On Demand technology stack options"
+
+                Sets unknown technology stack variable dynamically to value true 
+                echo "::set-output name=unknow_tech_stack::true"
                 ;;
             esac
           else
@@ -524,7 +528,9 @@ jobs:
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
-    if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
+    if: |
+       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} ||
+       ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'true' }}
          
     steps:
     # Checks out the source code.
@@ -549,10 +555,10 @@ jobs:
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
           Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
           FOD_RELEASE_ID=${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
-          Technology_Stack_ID=${{ needs.DefinesFODAppTechStack.outputs.tech_stack_id }}
-          Technology_Stack=${{ needs.DefinesFODAppTechStack.outputs.tech_stack }}
-          Language_Level_ID=${{ needs.DefinesFODAppTechStack.outputs.language_level_id }}
-          Language_Level=${{ needs.DefinesFODAppTechStack.outputs.language_level }}
+          Technology_Stack_ID=${{ needs.Repository-Technology-Stack-Management.outputs.Technology_Stack_ID }}
+          Technology_Stack=${{ needs.Repository-Technology-Stack-Management.outputs.Technology_Stack }}
+          Language_Level_ID=${{ needs.Repository-Technology-Stack-Management.outputs.Language_Level_ID }}
+          Language_Level=${{ needs.Repository-Technology-Stack-Management.outputs.Language_Level }}
 
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
 
