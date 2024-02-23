@@ -124,7 +124,7 @@ jobs:
       Technology_Stack_ID: ${{ steps.DefinesFODAppTechStack.outputs.tech_stack_id }}
       Technology_Stack: ${{ steps.DefinesFODAppTechStack.outputs.tech_stack }}
       Language_Level_ID: ${{ steps.DefinesFODAppTechStack.outputs.language_level_id }}
-      Language_Level_: ${{ steps.DefinesFODAppTechStack.outputs.language_level }}
+      Language_Level: ${{ steps.DefinesFODAppTechStack.outputs.language_level }}
       Unknown_Technology_Stack: ${{ steps.DefinesFODAppTechStack.outputs.unknow_tech_stack }}
 
     steps:
