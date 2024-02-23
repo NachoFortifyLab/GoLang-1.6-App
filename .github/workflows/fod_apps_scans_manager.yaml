@@ -121,11 +121,11 @@ jobs:
     # Saves the data of the technology stack based on the repository language 
     # to be used in the sast scan options, sast scan build packages and java configuration
     outputs:
-      Technology_Stack_ID: ${{ steps.DefinesFODAppTechStackVersions.outputs.tech_stack_id }}
-      Technology_Stack: ${{ steps.DefinesFODAppTechStackVersions.outputs.tech_stack }}
-      Language_Level_ID: ${{ steps.DefinesFODAppTechStackVersions.outputs.language_level_id }}
-      Language_Level_: ${{ steps.DefinesFODAppTechStackVersions.outputs.language_level }}
-      Unknown_Technology_Stack: ${{ steps.DefinesFODAppTechStackVersions.outputs.unknow_tech_stack }}
+      Technology_Stack_ID: ${{ steps.DefinesFODAppTechStack.outputs.tech_stack_id }}
+      Technology_Stack: ${{ steps.DefinesFODAppTechStack.outputs.tech_stack }}
+      Language_Level_ID: ${{ steps.DefinesFODAppTechStack.outputs.language_level_id }}
+      Language_Level_: ${{ steps.DefinesFODAppTechStack.outputs.language_level }}
+      Unknown_Technology_Stack: ${{ steps.DefinesFODAppTechStack.outputs.unknow_tech_stack }}
 
     steps:
     # Checks out the source code.
