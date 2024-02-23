@@ -85,7 +85,6 @@ jobs:
     # This job will run when language of the repository is Java
     if: ${{ needs.RepoInfo.outputs.Repo_Language == 'Java' }}
     
-
     steps:
     # Checks out the source code.
     - name: Checks Out the Source Code
@@ -114,7 +113,7 @@ jobs:
           echo "is_maven                         [${{ steps.java_info.outputs.is_maven }}]"
           echo "builder_name                     [${{ steps.java_info.outputs.builder_name }}]"
 
-  # Repository Technology Stack Management Job (for Java, C# and Python)
+  # Repository Technology Stack Management Job
   Repository-Technology-Stack-Management:
     # Indicates that this job requieres Get GitHub Repository Data Job to be completed in order to run.
     needs: Get-GitHub-Repo-Information
@@ -122,10 +121,6 @@ jobs:
     # Saves the data of the technology stack based on the repository language 
     # to be used in the sast scan options, sast scan build packages and java configuration
     outputs:
-      Technology_Stack_ID_Versions: ${{ steps.DefinesFODAppTechStackVersions.outputs.tech_stack_id_versions }}
-      Technology_Stack_Versions: ${{ steps.DefinesFODAppTechStackVersions.outputs.tech_stack_versions }}
-      Language_Level_ID_Versions: ${{ steps.DefinesFODAppTechStackVersions.outputs.language_level_id_versions }}
-      Language_Level_Versions: ${{ steps.DefinesFODAppTechStackVersions.outputs.language_level_versions }}
       Technology_Stack_ID: ${{ steps.DefinesFODAppTechStackVersions.outputs.tech_stack_id }}
       Technology_Stack: ${{ steps.DefinesFODAppTechStackVersions.outputs.tech_stack }}
       Language_Level_ID: ${{ steps.DefinesFODAppTechStackVersions.outputs.language_level_id }}
@@ -137,562 +132,180 @@ jobs:
       uses: actions/checkout@v2
 
     # Defines FOD Application Technology Stack based on the language of the repository
-    - name: Defines FOD Application Technology Stack for languages without versions
+    - name: Defines FOD Application Technology Stack
       id: DefinesFODAppTechStack
-      # This step will run when the repository language is not Java or C# or Python
-      if: |
-        ${{ needs.RepoInfo.outputs.Repo_Language !== 'Java' }} ||
-        ${{ needs.RepoInfo.outputs.Repo_Language !== 'C#' }} ||
-        ${{ needs.RepoInfo.outputs.Repo_Language !== 'Python' }}
-      run: |
-          # Sets up your Github requiered variables for this step
-          Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
-
-          # Checks which is the language of the code from the repository
-          case "$Repo_Language" in
-            "ABAP")
-              echo "The technology Stack from the repository is ABAP"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::2"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::ABAP"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "Apex")
-              echo "The technology Stack from the repository is Apex/VisualForce"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::21"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::Apex/Visualforce"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "ColdFusion")
-              echo "The technology Stack from the repository is CFML (ColdFusion)"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::5"
-              
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::CFML"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-              ;;
-            "COBOL")
-              echo "The technology Stack from the repository is COBOL"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::6"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::COBOL"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "Dart")
-              echo "The technology Stack from the repository is Dart/Flutter"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::29"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::Dart/Flutter"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "Go")
-              echo "The technology Stack from the repository is Go"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::22"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::Go"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "Dockerfile")
-              echo "The technology Stack from the repository is Infrastructure-As-Code/Dockerfile"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::27"
-              
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::Infrastructure-As-Code/Dockerfile"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language version
-              ;;
-            "HTML")
-              echo "The technology Stack from the repository is JS/TS/HTML"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::16"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::JS/TS/HTML"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "JavaScript")
-              echo "The technology Stack from the repository is JS/TS/HTML"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::16"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::JS/TS/HTML"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "TypeScript")
-              echo "The technology Stack from the repository is JS/TS/HTML"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::16"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::JS/TS/HTML"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "C")
-              echo "The technology Stack from the repository is MBS/C/C++/Scala"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::16"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::MBS/C/C++/Scala"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "C++")
-              echo "The technology Stack from the repository is MBS/C/C++/Scala"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::16"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::MBS/C/C++/Scala"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "Scala")
-              echo "The technology Stack from the repository is MBS/C/C++/Scala"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::16"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::MBS/C/C++/Scala"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "PHP")
-              echo "The technology Stack from the repository is PHP"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::9"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::PHP"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "Ruby")
-              echo "The technology Stack from the repository is Ruby"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::17"
-              
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::Ruby"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "Solidity")
-              echo "The technology Stack from the repository is Solidity"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::31"
-              
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::Solidity"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "Visual Basic 6.0")
-              echo "The technology Stack from the repository is Visual Basic 6.0"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::11"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::VB6"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            "VBScript")
-              echo "The technology Stack from the repository is Visual Basic Script"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id::14"
-              
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack::VBScript"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level::null"
-
-              echo the FOD application will have the technology stack $Repo_Language
-              ;;
-            *)
-              echo "Unknown Language."
-              
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id_versions::null"
-              
-              # Sets technology stack variable dynamically indicating that the value is not existing
-              echo "::set-output name=tech_stack_versions::"""
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id_versions::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level_versions::"""
-              ;;
-            esac
-          
-    # Defines FOD Application Technology Stack based on the language of the repository
-    - name: Defines FOD Application Technology Stack for languages with versions
-      id: DefinesFODAppTechStackVersions
-    # This step will run when the repository language is Java or C# or Python
-    if: |
-      ${{ needs.RepoInfo.outputs.Repo_Language == 'Java' }} ||
-      ${{ needs.RepoInfo.outputs.Repo_Language == 'C#' }} ||
-      ${{ needs.RepoInfo.outputs.Repo_Language == 'Python' }}
       run: |
           # Sets up your Github requiered variables for this step
           Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
           Java_Version=${{ needs.java_info.outputs.java_version }}
 
-          # Checks which is the language of the code from the repository
-          case "$Repo_Language" in
-            "C#")
-              echo "The technology Stack from the repository is .Net/.Net Core/ASP"
+          # Checks if the repositroy language is not Java or C# or Python
+          if [[ $Repo_Language != 'Java' || $Repo_Language != 'C#' || $Repo_Language != 'Python' ]]; then
+            # Sets language level id variable to null because is not a multi version language
+            echo "::set-output name=language_level_id::null"
+            
+            # Sets language level variable to null is not a multi version language
+            echo "::set-output name=language_level::null"
+            
+            # Switch between the non multi version languages and assign technology stack id and technology stack values related to the repository language
+            case "$Repo_Language" in
+              "ABAP")
+                echo "The technology Stack from the repository is ABAP"
+                
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::2"
+                
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::ABAP"
+                ;;
+              "Apex")
+                echo "The technology Stack from the repository is Apex/VisualForce"
+                
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::21"
+                
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::Apex/Visualforce"
+                ;;
+              "ColdFusion")
+                echo "The technology Stack from the repository is ColdFusion"
 
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id:_versions:1"
-
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack_versions::.NET"
-
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id_versions::2"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level_versions::2.0"
-
-              echo the FOD application will have the technology stack $Repo_Language version 2.0
-              ;;
-            "Java")
-              echo "The technology Stack from the repository is Java/J2EE/Kotlin"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id_versions::7"
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::5"
               
-              # Sets technology stack variable dynamically related to the technology stack of the repository
-              echo "::set-output name=tech_stack_versions::JAVA/J2EE/Kotlin"
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::CFML"
+                ;;
+              "COBOL")
+                echo "The technology Stack from the repository is COBOL"
 
-              case "$Java_Version" in
-                "6")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::9"
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::6"
+                
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::COBOL"
+                ;;
+              "Dart")
+                echo "The technology Stack from the repository is Dart"
 
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::1.6"
-                  ;;
-                "8")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::12"
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::29"
+                
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::Dart/Flutter"
+                ;;
+              "Go")
+                echo "The technology Stack from the repository is Go"
 
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::1.8"
-                  ;;
-                "9")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::17"
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::22"
+                
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::Go"
+                ;;
+              "Dockerfile")
+                echo "The technology Stack from the repository is Dockerfile"
 
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::1.9"
-                  ;;
-                "10")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::19"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::10"
-                  ;;
-                "11")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::20"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::11"
-                  ;;
-                "12")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::21"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::12"
-                  ;;
-                "13")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::22"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::13"
-                  ;;
-                "14")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::31"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::14"
-                  ;;
-                "17")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::34"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::17"
-                  ;;
-                *)
-                  echo "Java version $Java_Version not found in Fortify On Demand"
-
-                  echo "::set-output name=language_level_versions::8"
-                  ;;
-                  
-                echo the FOD application will have the technology stack $Repo_Language version $Java_Version 
-              esac
-            "Kotlin")
-              "6")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::9"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::1.6"
-                  ;;
-                "8")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::12"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::1.8"
-                  ;;
-                "9")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::17"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::1.9"
-                  ;;
-                "10")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::19"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::10"
-                  ;;
-                "11")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::20"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::11"
-                  ;;
-                "12")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::21"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::12"
-                  ;;
-                "13")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::22"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::13"
-                  ;;
-                "14")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::31"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::14"
-                  ;;
-                "17")
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::34"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::17"
-                  ;;
-                *)
-                  echo "Java version $Java_Version not found in Fortify On Demand"
-
-                  # Sets language level id variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_id_versions::12"
-
-                  # Sets language level variable related to the technology stack of the repository
-                  echo "::set-output name=language_level_versions::1.8"
-                  ;;
-                  
-                echo the FOD application will have the technology stack $Repo_Language version $Java_Version 
-              esac
-            "Python")
-              echo "The technology Stack from the repository is Python"
-
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id_versions::10"
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::27"
               
-              # Sets technology stack variable dynamically indicating that the value is Python
-              echo "::set-output name=tech_stack_versions::PYTHON"
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::Infrastructure-As-Code/Dockerfile"
+                ;;
+              "HTML" | "JavaScript" | "TypeScript")
+                echo "The technology Stack from the repository is JS/TS/HTML"
 
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id_versions::13"
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::16"
+                
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::JS/TS/HTML"
+                ;;
+              "C" | "C++" | "Scala")
+                echo "The technology Stack from the repository is MBS/C/C++/Scala"
 
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level_versions::2"
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::16"
+                
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::MBS/C/C++/Scala"
+                ;;
+              "PHP")
+                echo "The technology Stack from the repository is PHP"
 
-              echo the FOD application will have the technology stack $Repo_Language version 2
-              ;;
-            *)
-              echo "Unknown Language."
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::9"
+                 
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::PHP"
+                ;;
+              "Ruby")
+                echo "The technology Stack from the repository is Ruby"
 
-              # Sets technology stack id variable related to the technology stack of the repository
-              echo "::set-output name=tech_stack_id_versions::null"
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::17"
               
-              # Sets technology stack variable dynamically indicating that the value is not existing
-              echo "::set-output name=tech_stack_versions::"""
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::Ruby"
+                ;;
+              "Solidity")
+                echo "The technology Stack from the repository is Solidity"
+                
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::31"
+              
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::Solidity"
+                ;;
+              "Visual Basic 6.0")
+                echo "The technology Stack from the repository is Visual Basic 6.0"
+                
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::11"
+                
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::VB6"
+                ;;
+              "VBScript")
+                echo "The technology Stack from the repository is Visual Basic Script"
+                
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::14"
+              
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::VBScript"
+                ;;
+              *)
+                echo "Language not found on Fortify On Demand"
 
-              # Sets language level id variable related to the technology stack of the repository
-              echo "::set-output name=language_level_id_versions::null"
-
-              # Sets language level variable related to the technology stack of the repository
-              echo "::set-output name=language_level_versions::"""
-              ;;
+                # Sets technology stack id variable related to the technology stack of the repository
+                echo "::set-output name=tech_stack_id::null"
+              
+                # Sets technology stack variable dynamically related to the technology stack of the repository
+                echo "::set-output name=tech_stack::"""
+                
+                # Sets language level id variable related to the technology stack of the repository
+                echo "::set-output name=language_level_id::null"
+                
+                # Sets language level variable related to the technology stack of the repository
+                echo "::set-output name=language_level::"""
+                ;;
             esac
+          else
+            echo "The technology Stack from the repository is .Net/.Net Core/ASP"
+            
+            # Sets technology stack id variable related to the technology stack of the repository
+            echo "::set-output name=tech_stack_id::1"
+            
+            # Sets technology stack variable dynamically related to the technology stack of the repository
+            echo "::set-output name=tech_stack::.NET"
+            
+            # Sets language level id variable related to the technology stack of the repository
+            echo "::set-output name=language_level_id::2"
+            
+            # Sets language level variable related to the technology stack of the repository
+            echo "::set-output name=language_level::2.0"
+          fi
             
   # FOD Application Management Job
   FOD-Application-Management:
