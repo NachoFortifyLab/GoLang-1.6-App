@@ -561,10 +561,10 @@ jobs:
           FOD_EMAIL="${{ secrets.FOD_EMAIL }}"
           Repo_Language=${{ needs.RepoInfo.outputs.Repo_Language }}
           FOD_RELEASE_ID=${{ needs.FOD-Application-Management.outputs.FOD_Release_ID }}
-          Technology_Stack_ID: ${{ needs.DefinesFODAppTechStack.outputs.tech_stack_id }}
-          Technology_Stack: ${{ needs.DefinesFODAppTechStack.outputs.tech_stack }}
-          Language_Level_ID: ${{ needs.DefinesFODAppTechStack.outputs.language_level_id }}
-          Language_Level: ${{ needs.DefinesFODAppTechStack.outputs.language_level }}
+          Technology_Stack_ID=${{ needs.DefinesFODAppTechStack.outputs.tech_stack_id }}
+          Technology_Stack=${{ needs.DefinesFODAppTechStack.outputs.tech_stack }}
+          Language_Level_ID=${{ needs.DefinesFODAppTechStack.outputs.language_level_id }}
+          Language_Level=${{ needs.DefinesFODAppTechStack.outputs.language_level }}
 
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
 
