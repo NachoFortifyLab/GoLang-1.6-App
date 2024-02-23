@@ -69,6 +69,8 @@ jobs:
         # Extracts the language or languages from the output JSON file
         LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
 
+        echo "$LANGUAGE"
+
         # Saves the repository information as the output of the current step to be used in next steps
         echo "::set-output name=repo_language::$LANGUAGE"
         
