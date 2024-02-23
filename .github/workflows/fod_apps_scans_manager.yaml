@@ -70,7 +70,7 @@ jobs:
         LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
 
         # Saves the repository information as the output of the current step to be used in next steps
-        echo "::set-output name=repo_language::$LANGUAGE"
+        echo "::set-output name=repo_language::"$LANGUAGE""
         
   # Defines Java Configuration Job
   Define-Java-Configuration:
@@ -278,13 +278,7 @@ jobs:
                 echo "::set-output name=tech_stack::VBScript"
                 ;;
               *)
-                echo "Language not found on Fortify On Demand"
-              
-                # Sets technology stack variable dynamically related to the technology stack of the repository
-                echo "::set-output name=tech_stack:: "
-                
-                # Sets language level variable related to the technology stack of the repository
-                echo "::set-output name=language_level:: "
+                echo "Language not found on Fortify On Demand technology stack options"
                 ;;
             esac
           else
