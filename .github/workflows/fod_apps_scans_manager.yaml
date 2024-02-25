@@ -512,15 +512,14 @@ jobs:
             
             exit 1  # Exit with a non-zero status code to indicate failure
           fi
+          
   # FOD SAST Scan Options Job
   FOD-SAST-Scan-Options:
     # Indicates that this job requieres FOD Application Management Job to be completed in order to run.
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
-    if: |
-       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} ||
-       ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'true' }}
+    if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
          
     steps:
     # Checks out the source code.
@@ -649,49 +648,54 @@ jobs:
             Is_Gradle=${{ needs.java_info.outputs.is_gradle }}
             Is_Maven=${{ needs.java_info.outputs.is_maven }}
             Builder_Name=${{ needs.java_info.outputs.builder_name }}
-            
-            # Checks if the repository language is Java
-            case "$Repo_Language" in
-              "Java")
-                echo "Repository language is: Java"
-                
-                echo "Java version is $Java Version"
-                echo "::set-output name=sast_scan_java_version::$Java Version"
-                if [[ $Is_Gradle == 'true' || $Builder_Name == "Gradle" ]]; then
-                  echo "the Java application has Gradle build"
-                
-                  echo "::set-output name=repo_package_build::gradle"
-                elif [[ $Is_Maven == "true" || $Builder_Name == "Maven" ]]; then
-                  echo "the Java application has Maven build"
-                
-                  echo "::set-output name=repo_package_build::mvn"
-                else 
-                  echo "the Java appplication has an unknown java build or has not any build at all"
-                
-                  echo "::set-output name=repo_package_build::none"
-                fi
-                ;;
-              "Python")
-                echo "Repository language is: Python"
-                
-                echo "::set-output name=repo_java_version::8"
-              
-                echo "::set-output name=repo_package_build::none"
-                ;;
-              "C#")
-                echo "Repository language is: .NET"
-                echo "::set-output name=repo_java_version::8"
-              
-                echo "::set-output name=repo_package_build::none"
-                ;;
-              *)
-                echo "Repository language is not C#, Java or Python"
-                ;;
-            esac
+
             if [[ $Repo_Language !== "Java"|| $Repo_Language !== "Python" || $Repo_Language !== "C#" ]]; then
               echo "::set-output name=repo_java_version::8"
               
               echo "::set-output name=repo_package_build::none"
+            else
+              # Checks if the repository language is Java
+              case "$Repo_Language" in
+                "Java")
+                  echo "Repository language is: Java"
+                
+                  echo "Java version is $Java Version"
+                  
+                  echo "::set-output name=sast_scan_java_version::$Java Version"
+                  
+                  if [[ $Is_Gradle == 'true' || $Builder_Name == "Gradle" ]]; then
+                    echo "the Java application has Gradle build"
+                
+                    echo "::set-output name=repo_package_build::gradle"
+                    
+                  elif [[ $Is_Maven == "true" || $Builder_Name == "Maven" ]]; then
+                    echo "the Java application has Maven build"
+                
+                    echo "::set-output name=repo_package_build::mvn"
+                  else 
+                    echo "the Java appplication has an unknown java build or has not any build at all"
+                
+                    echo "::set-output name=repo_package_build::none"
+                  fi
+                  ;;
+                "Python")
+                  echo "Repository language is: Python"
+                
+                  echo "::set-output name=repo_java_version::8"
+              
+                  echo "::set-output name=repo_package_build::none"
+                  ;;
+                "C#")
+                  echo "Repository language is: .NET"
+                  
+                  echo "::set-output name=repo_java_version::8"
+              
+                 echo "::set-output name=repo_package_build::none"
+                 ;;
+                *)
+                 echo "Repository language is not C#, Java or Python"
+                 ;;
+              esac
             fi
        
       # Set ups Java because is required to run some Fortify utilities.
