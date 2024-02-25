@@ -649,7 +649,7 @@ jobs:
             Is_Maven=${{ needs.java_info.outputs.is_maven }}
             Builder_Name=${{ needs.java_info.outputs.builder_name }}
 
-            if [[ $Repo_Language !== "Java" || $Repo_Language !== "Python" || $Repo_Language !== "C#" ]]; then
+            if [[ ($Repo_Language !== "Java" || $Repo_Language !== "Python") || ($Repo_Language !== "C#") ]]; then
               echo "::set-output name=repo_java_version::8"
               
               echo "::set-output name=repo_package_build::none"
