@@ -528,10 +528,8 @@ jobs:
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
-    if: |
-       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} ||
-       ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'true' }}
-         
+    if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
+      
     steps:
     # Checks out the source code.
     - name: Checks Out the Source Code
@@ -559,65 +557,70 @@ jobs:
           Technology_Stack=${{ needs.Repository-Technology-Stack-Management.outputs.Technology_Stack }}
           Language_Level_ID=${{ needs.Repository-Technology-Stack-Management.outputs.Language_Level_ID }}
           Language_Level=${{ needs.Repository-Technology-Stack-Management.outputs.Language_Level }}
+          Unknown_Technology_Stack=${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack }}
 
-          echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
-
-          # Creates a JSON file to be used as body for the Set Up of the SAST Scan options 
-          Save_FOD_Application_Static_Scan_Options_Body=$(cat <<-EOF
-          {
-            "assessmentTypeId": 274,
-            "entitlementId": 12880,
-            "entitlementFrequencyType": 2,
-            "releaseId": $FOD_Release_ID,
-            "technologyStackId": $Technology_Stack_ID,
-            "technologyStack": "$Technology_Stack",
-            "languageLevelId": $Language_Level_ID,
-            "languageLevel": $Language_Level,
-            "performOpenSourceAnalysis": false,
-            "auditPreferenceType": 2,
-            "includeThirdPartyLibraries": false
-          }
-          EOF
-          )
-
-          # Echo JSON data to a file named options.json
-          echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
-
-          # Sends an API Request with PUT Method to set up the sast scan options of the recently created application and extracts the HTTP status code from the response
-          Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/${FOD_RELEASE_ID}/static-scans/scan-setup" \
-            -H "Authorization: Bearer ${FOD_API_TOKEN}" \
-            -H "Accept: application/json" \
-            -H "Content-Type: application/json" \
-            -w "%{http_code}" \
-            -o "save-sast-scan-options-output.json" \
-            -d @options.json)
-                
-          # Saves the PUT request's status code
-          Static_Scan_Options_Request_Status_Code=$(echo $Save_FOD_Application_Static_Scan_Options_Request | tr -d '\n' | sed -e 's/.*Status Code://')
-
-          # Checks if the status code of the request is 200 if not it will end the workflow with an error
-          if [[ $Static_Scan_Options_Request_Status_Code -eq 200 ]]; then
-            echo "API Request was successful."
-            
-            # Prints the status code of the PUT Request (Passed Request)
-            echo "Status code from the request of saving FOD application sast scan options: ${Static_Scan_Options_Request_Status_Code}"
-            
-            # Prints the response of the Put Request as a parsed JSON (Passed Request)
-            echo "API Request response saved to a JSON file. Showing the results from the query:"
-            jq . save-sast-scan-options-output.json
-          
-            echo "SAST scan options from ${Repo_Name} application has been saved."
+          if [[ $Unknown_Technology_Stack == 'true' ]]; then
+            echo "SAST Scan options set up cancelled. No technology stack found"
           else
-            echo "API Request has failed. FOD API server is down or your Token has expired or please check the PUT Request"
+            echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
+
+            # Creates a JSON file to be used as body for the Set Up of the SAST Scan options 
+            Save_FOD_Application_Static_Scan_Options_Body=$(cat <<-EOF
+            {
+              "assessmentTypeId": 274,
+              "entitlementId": 12880,
+              "entitlementFrequencyType": 2,
+              "releaseId": $FOD_Release_ID,
+              "technologyStackId": $Technology_Stack_ID,
+              "technologyStack": "$Technology_Stack",
+              "languageLevelId": $Language_Level_ID,
+              "languageLevel": $Language_Level,
+              "performOpenSourceAnalysis": false,
+              "auditPreferenceType": 2,
+              "includeThirdPartyLibraries": false
+            }
+           EOF
+           )
+           
+           # Echo JSON data to a file named options.json
+           echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
+
+           # Sends an API Request with PUT Method to set up the sast scan options of the recently created application and extracts the HTTP status code from the response
+           Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/${FOD_RELEASE_ID}/static-scans/scan-setup" \
+             -H "Authorization: Bearer ${FOD_API_TOKEN}" \
+             -H "Accept: application/json" \
+             -H "Content-Type: application/json" \
+             -w "%{http_code}" \
+             -o "save-sast-scan-options-output.json" \
+             -d @options.json)
+                
+           # Saves the PUT request's status code
+           Static_Scan_Options_Request_Status_Code=$(echo $Save_FOD_Application_Static_Scan_Options_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+
+           # Checks if the status code of the request is 200 if not it will end the workflow with an error
+           if [[ $Static_Scan_Options_Request_Status_Code -eq 200 ]]; then
+             echo "API Request was successful."
             
-            # Prints the status code of the PUT Request (Failed Request)
-            echo "Status code from the request of saving FOD application sast scan options: ${Static_Scan_Options_Request_Status_Code}"
+             # Prints the status code of the PUT Request (Passed Request)
+             echo "Status code from the request of saving FOD application sast scan options: ${Static_Scan_Options_Request_Status_Code}"
+            
+             # Prints the response of the Put Request as a parsed JSON (Passed Request)
+             echo "API Request response saved to a JSON file. Showing the results from the query:"
+             jq . save-sast-scan-options-output.json
+          
+             echo "SAST scan options from ${Repo_Name} application has been saved."
+           else
+             echo "API Request has failed. FOD API server is down or your Token has expired or please check the PUT Request"
+            
+             # Prints the status code of the PUT Request (Failed Request)
+             echo "Status code from the request of saving FOD application sast scan options: ${Static_Scan_Options_Request_Status_Code}"
                 
-            # Prints the response of the PUT Request as a parsed JSON (Failed Request)
-            echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
-            jq . save-sast-scan-options-output.json
+             # Prints the response of the PUT Request as a parsed JSON (Failed Request)
+             echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
+             jq . save-sast-scan-options-output.json
                 
-            exit 1  # Exit with a non-zero status code to indicate failure
+             exit 1  # Exit with a non-zero status code to indicate failure
+           fi 
           fi
 
   # FOD SAST Scan Job
