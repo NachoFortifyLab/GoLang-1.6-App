@@ -48,29 +48,29 @@ jobs:
     - name: Gets repository information and extracts the language used in the repository
       id: RepoInfo
       run: |
-        # Repository API URL
-        REPO_API_URL="https://api.github.com/repos/${{ github.repository }}"
-
-        # Sends a request to get the repository information
-        Get_Repo_Information_Request=$(curl -s $REPO_API_URL \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -w "%{http_code}" \
-          -o "github-info-output.json") # Saves the results of the query to a file
-
-        echo "API Request was successful."
-
-        # Saves the GitHub request's status code
-        Get_Repo_Information_Request_Status_Code=$(echo $Get_Repo_Information_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+          # Repository API URL
+          REPO_API_URL="https://api.github.com/repos/${{ github.repository }}"
           
-        # Prints the response of the GitHub Request as a parsed JSON
-        echo "GitHub API Request response saved to a JSON file. Showing the results from the query:"
-        jq . github-info-output.json
-
-        # Extracts the language or languages from the output JSON file
-        LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
-
-        # Saves the repository information as the output of the current step to be used in next steps
-        echo "::set-output name=repo_language::$LANGUAGE"
+          # Sends a request to get the repository information
+          Get_Repo_Information_Request=$(curl -s $REPO_API_URL \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -w "%{http_code}" \
+            -o "github-info-output.json") # Saves the results of the query to a file
+            
+          echo "API Request was successful."
+          
+          # Saves the GitHub request's status code
+          Get_Repo_Information_Request_Status_Code=$(echo $Get_Repo_Information_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+          
+          # Prints the response of the GitHub Request as a parsed JSON
+          echo "GitHub API Request response saved to a JSON file. Showing the results from the query:"
+          jq . github-info-output.json
+          
+          # Extracts the language or languages from the output JSON file
+          LANGUAGE=$(cat "github-info-output.json" | jq -r '.language')
+          
+          # Saves the repository information as the output of the current step to be used in next steps
+          echo "::set-output name=repo_language::$LANGUAGE"
         
   # Defines Java Configuration Job
   Define-Java-Configuration:
@@ -112,7 +112,7 @@ jobs:
           echo "is_gradle                        [${{ steps.java_info.outputs.is_gradle }}]"
           echo "is_maven                         [${{ steps.java_info.outputs.is_maven }}]"
           echo "builder_name                     [${{ steps.java_info.outputs.builder_name }}]"
-
+          
   # Repository Technology Stack Management Job
   Repository-Technology-Stack-Management:
     # Indicates that this job requieres Get GitHub Repository Data Job to be completed in order to run.
@@ -139,9 +139,9 @@ jobs:
           # Sets up your Github requiered variables for this step
           Repo_Language=${{ needs.sadads.outputs.Repo_Language }}
           Java_Version=${{ needs.Define-Java-Configuration.outputs.java_version }}
-
+          
           echo "Repository language is: $Repo_Language"
-
+          
           # Checks if the repositroy language is not Java or C# or Python
           if [[ $Repo_Language != 'Java' || $Repo_Language != 'C#' || $Repo_Language != 'Python' ]]; then
             # Sets language level id variable to null because is not a multi version language
@@ -172,7 +172,7 @@ jobs:
                 ;;
               "ColdFusion")
                 echo "The technology Stack from the repository is ColdFusion"
-
+                
                 # Sets technology stack id variable related to the technology stack of the repository
                 echo "::set-output name=tech_stack_id::5"
               
@@ -181,7 +181,6 @@ jobs:
                 ;;
               "COBOL")
                 echo "The technology Stack from the repository is COBOL"
-
                 # Sets technology stack id variable related to the technology stack of the repository
                 echo "::set-output name=tech_stack_id::6"
                 
@@ -190,7 +189,7 @@ jobs:
                 ;;
               "Dart")
                 echo "The technology Stack from the repository is Dart"
-
+                
                 # Sets technology stack id variable related to the technology stack of the repository
                 echo "::set-output name=tech_stack_id::29"
                 
@@ -199,7 +198,7 @@ jobs:
                 ;;
               "Go")
                 echo "The technology Stack from the repository is Go"
-
+                
                 # Sets technology stack id variable related to the technology stack of the repository
                 echo "::set-output name=tech_stack_id::22"
                 
@@ -208,7 +207,7 @@ jobs:
                 ;;
               "Dockerfile")
                 echo "The technology Stack from the repository is Dockerfile"
-
+                
                 # Sets technology stack id variable related to the technology stack of the repository
                 echo "::set-output name=tech_stack_id::27"
               
@@ -217,7 +216,7 @@ jobs:
                 ;;
               "HTML" | "JavaScript" | "TypeScript")
                 echo "The technology Stack from the repository is JS/TS/HTML"
-
+                
                 # Sets technology stack id variable related to the technology stack of the repository
                 echo "::set-output name=tech_stack_id::16"
                 
@@ -226,7 +225,7 @@ jobs:
                 ;;
               "C" | "C++" | "Scala")
                 echo "The technology Stack from the repository is MBS/C/C++/Scala"
-
+                
                 # Sets technology stack id variable related to the technology stack of the repository
                 echo "::set-output name=tech_stack_id::16"
                 
@@ -235,7 +234,7 @@ jobs:
                 ;;
               "PHP")
                 echo "The technology Stack from the repository is PHP"
-
+                
                 # Sets technology stack id variable related to the technology stack of the repository
                 echo "::set-output name=tech_stack_id::9"
                  
@@ -244,7 +243,7 @@ jobs:
                 ;;
               "Ruby")
                 echo "The technology Stack from the repository is Ruby"
-
+                
                 # Sets technology stack id variable related to the technology stack of the repository
                 echo "::set-output name=tech_stack_id::17"
               
@@ -280,7 +279,7 @@ jobs:
                 ;;
               *)
                 echo "Language not found on Fortify On Demand technology stack options"
-
+                
                 # Sets unknown technology stack variable dynamically to value true 
                 echo "::set-output name=unknow_tech_stack::true"
                 ;;
@@ -399,7 +398,6 @@ jobs:
             # Checks if the API Request returns data if not it will create the application and scan it
             if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
               echo "There isn't any Application called ${Repo_Name} found in your Fortify On Demand Tenant"
-
               # Sets boolean variable to false dynamically indicating that the FOD App not exists
               echo "::set-output name=isFODAppExists::false"
               
@@ -452,13 +450,10 @@ jobs:
               echo "API Request was successful."
               
               echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
-
               # Sets boolean variable to true dynamically indicating that the FOD App exists
               echo "::set-output name=isFODAppExists::true"
-
               # Extracts the applicationId values from the output JSON file
               APPID=$(cat "get-application-output.json" | jq -r '.items[0].applicationId')
-
               # Sends an API Request with GET method to retrieve the information from the release related to the application from the repository and extracts the HTTP status code from the response
               Get_FOD_Release_by_AppId_Request=$(curl -X GET "${FOD_API_URL}/releases?filters=applicationId%3A${APPID}" \
                 -H "Authorization: Bearer ${FOD_API_TOKEN}" \
@@ -468,7 +463,6 @@ jobs:
            
               # Saves the GET request's status code
               Get_Release_Request_Status_Code=$(echo $Get_FOD_Release_by_AppId_Request | tr -d '\n' | sed -e 's/.*Status Code://')
-
               # Checks if the status code of the request is 200 if not it will end the workflow with an error
               if [[ $Get_Release_Request_Status_Code -eq 200 ]]; then
                 echo "API Request was successful."
@@ -483,15 +477,12 @@ jobs:
                 # Extracts the totalcount and items values from the output JSON file
                 ITEMS=$(cat "get-release-output.json" | jq -r '.items')
                 TOTALCOUNT=$(cat "get-release-output.json" | jq -r '.totalCount')
-
                 # Checks if the API Request returns data if not it will create the application and scan it
                 if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
                   echo "There isn't any application related to that applicationId in your Fortify On Demand Tenant"
-
                   exit 1  # Exit with a non-zero status code to indicate failure
                 else
                   echo "There is an application related to that applicationId in your Fortify On Demand Tenant"
-
                   # Extracts the releaseid value from the output JSON file of the Application Creation Request
                   FOD_Release_ID=$(cat "get-release-output.json" | jq -r '.items[0].releaseId')
               
@@ -521,15 +512,16 @@ jobs:
             
             exit 1  # Exit with a non-zero status code to indicate failure
           fi
-
   # FOD SAST Scan Options Job
   FOD-SAST-Scan-Options:
     # Indicates that this job requieres FOD Application Management Job to be completed in order to run.
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
-    if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
-      
+    if: |
+       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} ||
+       ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'true' }}
+         
     steps:
     # Checks out the source code.
     - name: Checks Out the Source Code
@@ -557,72 +549,65 @@ jobs:
           Technology_Stack=${{ needs.Repository-Technology-Stack-Management.outputs.Technology_Stack }}
           Language_Level_ID=${{ needs.Repository-Technology-Stack-Management.outputs.Language_Level_ID }}
           Language_Level=${{ needs.Repository-Technology-Stack-Management.outputs.Language_Level }}
-          Unknown_Technology_Stack=${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack }}
-
-          if [[ $Unknown_Technology_Stack == 'true' ]]; then
-            echo "SAST Scan options set up cancelled. No technology stack found"
-          else
-            echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
-
-            # Creates a JSON file to be used as body for the Set Up of the SAST Scan options 
-            Save_FOD_Application_Static_Scan_Options_Body=$(cat <<-EOF
-            {
-              "assessmentTypeId": 274,
-              "entitlementId": 12880,
-              "entitlementFrequencyType": 2,
-              "releaseId": $FOD_Release_ID,
-              "technologyStackId": $Technology_Stack_ID,
-              "technologyStack": "$Technology_Stack",
-              "languageLevelId": $Language_Level_ID,
-              "languageLevel": $Language_Level,
-              "performOpenSourceAnalysis": false,
-              "auditPreferenceType": 2,
-              "includeThirdPartyLibraries": false
-            }
-           EOF
-           )
-           
-           # Echo JSON data to a file named options.json
-           echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
-
-           # Sends an API Request with PUT Method to set up the sast scan options of the recently created application and extracts the HTTP status code from the response
-           Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/${FOD_RELEASE_ID}/static-scans/scan-setup" \
-             -H "Authorization: Bearer ${FOD_API_TOKEN}" \
-             -H "Accept: application/json" \
-             -H "Content-Type: application/json" \
-             -w "%{http_code}" \
-             -o "save-sast-scan-options-output.json" \
-             -d @options.json)
-                
-           # Saves the PUT request's status code
-           Static_Scan_Options_Request_Status_Code=$(echo $Save_FOD_Application_Static_Scan_Options_Request | tr -d '\n' | sed -e 's/.*Status Code://')
-
-           # Checks if the status code of the request is 200 if not it will end the workflow with an error
-           if [[ $Static_Scan_Options_Request_Status_Code -eq 200 ]]; then
-             echo "API Request was successful."
-            
-             # Prints the status code of the PUT Request (Passed Request)
-             echo "Status code from the request of saving FOD application sast scan options: ${Static_Scan_Options_Request_Status_Code}"
-            
-             # Prints the response of the Put Request as a parsed JSON (Passed Request)
-             echo "API Request response saved to a JSON file. Showing the results from the query:"
-             jq . save-sast-scan-options-output.json
           
-             echo "SAST scan options from ${Repo_Name} application has been saved."
-           else
-             echo "API Request has failed. FOD API server is down or your Token has expired or please check the PUT Request"
+          echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
+          
+          # Creates a JSON file to be used as body for the Set Up of the SAST Scan options 
+          Save_FOD_Application_Static_Scan_Options_Body=$(cat <<-EOF
+          {
+            "assessmentTypeId": 274,
+            "entitlementId": 12880,
+            "entitlementFrequencyType": 2,
+            "releaseId": $FOD_Release_ID,
+            "technologyStackId": $Technology_Stack_ID,
+            "technologyStack": "$Technology_Stack",
+            "languageLevelId": $Language_Level_ID,
+            "languageLevel": $Language_Level,
+            "performOpenSourceAnalysis": false,
+            "auditPreferenceType": 2,
+            "includeThirdPartyLibraries": false
+          }
+          EOF
+          )
+          
+          # Echo JSON data to a file named options.json
+          echo "$Save_FOD_Application_Static_Scan_Options_Body" > options.json
+          # Sends an API Request with PUT Method to set up the sast scan options of the recently created application and extracts the HTTP status code from the response
+          Save_FOD_Application_Static_Scan_Options_Request=$(curl -X PUT "${FOD_API_URL}/releases/${FOD_RELEASE_ID}/static-scans/scan-setup" \
+            -H "Authorization: Bearer ${FOD_API_TOKEN}" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            -w "%{http_code}" \
+            -o "save-sast-scan-options-output.json" \
+            -d @options.json)
+                
+          # Saves the PUT request's status code
+          Static_Scan_Options_Request_Status_Code=$(echo $Save_FOD_Application_Static_Scan_Options_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+          # Checks if the status code of the request is 200 if not it will end the workflow with an error
+          if [[ $Static_Scan_Options_Request_Status_Code -eq 200 ]]; then
+            echo "API Request was successful."
             
-             # Prints the status code of the PUT Request (Failed Request)
-             echo "Status code from the request of saving FOD application sast scan options: ${Static_Scan_Options_Request_Status_Code}"
+            # Prints the status code of the PUT Request (Passed Request)
+            echo "Status code from the request of saving FOD application sast scan options: ${Static_Scan_Options_Request_Status_Code}"
+            
+            # Prints the response of the Put Request as a parsed JSON (Passed Request)
+            echo "API Request response saved to a JSON file. Showing the results from the query:"
+            jq . save-sast-scan-options-output.json
+          
+            echo "SAST scan options from ${Repo_Name} application has been saved."
+          else
+            echo "API Request has failed. FOD API server is down or your Token has expired or please check the PUT Request"
+            
+            # Prints the status code of the PUT Request (Failed Request)
+            echo "Status code from the request of saving FOD application sast scan options: ${Static_Scan_Options_Request_Status_Code}"
                 
-             # Prints the response of the PUT Request as a parsed JSON (Failed Request)
-             echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
-             jq . save-sast-scan-options-output.json
+            # Prints the response of the PUT Request as a parsed JSON (Failed Request)
+            echo "API Request response saved to a JSON file, please check the errors and fix the issue if needed:"
+            jq . save-sast-scan-options-output.json
                 
-             exit 1  # Exit with a non-zero status code to indicate failure
-           fi 
+            exit 1  # Exit with a non-zero status code to indicate failure
           fi
-
+          
   # FOD SAST Scan Job
   FOD-SAST-Scan:
     # Use the appropriate runner for building your source code.
@@ -664,16 +649,14 @@ jobs:
             Is_Gradle=${{ needs.java_info.outputs.is_gradle }}
             Is_Maven=${{ needs.java_info.outputs.is_maven }}
             Builder_Name=${{ needs.java_info.outputs.builder_name }}
-
+            
             # Checks if the repository language is Java
             case "$Repo_Language" in
               "Java")
                 echo "Repository language is: Java"
                 
                 echo "Java version is $Java Version"
-
                 echo "::set-output name=sast_scan_java_version::$Java Version"
-
                 if [[ $Is_Gradle == 'true' || $Builder_Name == "Gradle" ]]; then
                   echo "the Java application has Gradle build"
                 
@@ -697,7 +680,6 @@ jobs:
                 ;;
               "C#")
                 echo "Repository language is: .NET"
-
                 echo "::set-output name=repo_java_version::8"
               
                 echo "::set-output name=repo_package_build::none"
@@ -706,7 +688,6 @@ jobs:
                 echo "Repository language is not C#, Java or Python"
                 ;;
             esac
-
             if [[ $Repo_Language !== "Java"|| $Repo_Language !== "Python" || $Repo_Language !== "C#" ]]; then
               echo "::set-output name=repo_java_version::8"
               
