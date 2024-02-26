@@ -663,7 +663,7 @@ jobs:
             Builder_Name=${{ needs.java_info.outputs.builder_name }}
 
             if [[ $Repo_Language != 'Java' || $Repo_Language != 'C#' || $Repo_Language != 'Python' ]]; then
-              echo "The repository language is not Java FOD SAST Scan runner will used the default Java version to run the SAST Scan"
+              echo "The repository language is not Java FOD SAST Scan runner it will use the default Java version to run the SAST Scan"
               
               # Saves the repository java version as the output to be used as runner for FOD SAST Scan (Default)
               echo "::set-output name=repo_java_version::8"
@@ -740,7 +740,7 @@ jobs:
         run: scancentral package $PACKAGE_OPTS -o package.zip
         env:
           Repo_Package_Build: ${{ needs.RepoLanguagePackageChecker.outputs.repo_package_build }}
-          PACKAGE_OPTS: "-bt $Repo_Package_Build"
+          PACKAGE_OPTS: "-bt ${Repo_Package_Build}"
 
       # Starts Fortify on Demand SAST Scan and wait until results completition. For more information on FOD Uploader commands, see https://github.com/fod-dev/fod-uploader-java
       # TODO: Update ENV variables for your application and create the necessary GitHub Secrets.  Helpful hints:
