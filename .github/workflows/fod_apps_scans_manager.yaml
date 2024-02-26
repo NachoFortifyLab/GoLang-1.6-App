@@ -530,8 +530,8 @@ jobs:
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
     if: |
-       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
-       ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack != 'true'  }}
+      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
+      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack != 'true'  }}
          
     steps:
     # Checks out the source code.
@@ -724,11 +724,9 @@ jobs:
       - name: Set ups Java
         uses: actions/setup-java@v3
         with:
-          java-version: $Sast_Scan_Java_Version
+          java-version: ${{ needs.RepoLanguagePackageChecker.outputs.sast_scan_java_version }} 
           distribution: 'temurin'
-        env:
-          Sast_Scan_Java_Version: ${{ needs.RepoLanguagePackageChecker.outputs.sast_scan_java_version }} 
-
+          
       # Prepares source code and dependencies to be uploaded in FOD with ScanCentral Client.
       # TODO: Update PACKAGE_OPTS based on the ScanCentral Client documentation for your project's included tech stack(s). Helpful hints:
       #   ScanCentral Client will download dependencies for maven (-bt mvn) and gradle (-bt gradle).
