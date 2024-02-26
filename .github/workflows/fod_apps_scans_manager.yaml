@@ -144,143 +144,146 @@ jobs:
           
           # Checks if the repositroy language is not Java or C# or Python
           if [[ $Repo_Language != 'Java' || $Repo_Language != 'C#' || $Repo_Language != 'Python' ]]; then
-            # Sets language level id variable to null because is not a multi version language
+            echo "echo the repository is not build in a multi version language"
+            
+            # Sets language level id variable to null because the repository language is not a multi version language
             echo "::set-output name=language_level_id::null"
             
-            # Sets language level variable to null is not a multi version language
+            # Sets language level variable to null because the repository language is not a multi version language
             echo "::set-output name=language_level::null"
             
-            # Switch between the non multi version languages and assign technology stack id and technology stack values related to the repository language
+            # Switch between the non multi version languages and assign technology stack id and technology stack values based on the repository language
             case "$Repo_Language" in
               "ABAP")
                 echo "The technology Stack from the repository is ABAP"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 2 if the repository is build in ABAP language
                 echo "::set-output name=tech_stack_id::2"
                 
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to ABAP if the repository is build in ABAP language
                 echo "::set-output name=tech_stack::ABAP"
                 ;;
               "Apex")
                 echo "The technology Stack from the repository is Apex/VisualForce"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 21 if the repository is build in Apex language
                 echo "::set-output name=tech_stack_id::21"
                 
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to Apex/Visualforce if the repository is build in Apex language
                 echo "::set-output name=tech_stack::Apex/Visualforce"
                 ;;
               "ColdFusion")
                 echo "The technology Stack from the repository is ColdFusion"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 5 if the repository is build in ColdFusion language
                 echo "::set-output name=tech_stack_id::5"
               
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to CFML if the repository is build in ColdFusion language
                 echo "::set-output name=tech_stack::CFML"
                 ;;
               "COBOL")
                 echo "The technology Stack from the repository is COBOL"
-                # Sets technology stack id variable related to the technology stack of the repository
+                
+                # Sets technology stack id variable dynamically to 6 if the repository is build in ColdFusion language
                 echo "::set-output name=tech_stack_id::6"
                 
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to COBOL if the repository is build in ColdFusion language
                 echo "::set-output name=tech_stack::COBOL"
                 ;;
               "Dart")
                 echo "The technology Stack from the repository is Dart"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 29 if the repository is build in Dart language
                 echo "::set-output name=tech_stack_id::29"
                 
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to Dart/Flutter if the repository is build in Dart language
                 echo "::set-output name=tech_stack::Dart/Flutter"
                 ;;
               "Go")
                 echo "The technology Stack from the repository is Go"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 22 if the repository is build in Go language
                 echo "::set-output name=tech_stack_id::22"
                 
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to Go if the repository is build in Go language
                 echo "::set-output name=tech_stack::Go"
                 ;;
               "Dockerfile")
                 echo "The technology Stack from the repository is Dockerfile"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 27 if the repository is build in Dockerfile language
                 echo "::set-output name=tech_stack_id::27"
               
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to Infrastructure-As-Code/Dockerfile if the repository is build in Dockerfile language
                 echo "::set-output name=tech_stack::Infrastructure-As-Code/Dockerfile"
                 ;;
               "HTML" | "JavaScript" | "TypeScript")
                 echo "The technology Stack from the repository is JS/TS/HTML"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 16 if the repository is build in JS or TS or HTML languages
                 echo "::set-output name=tech_stack_id::16"
                 
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to JS/TS/HTML if the repository is build in JS or TS or HTML languages
                 echo "::set-output name=tech_stack::JS/TS/HTML"
                 ;;
               "C" | "C++" | "Scala")
                 echo "The technology Stack from the repository is MBS/C/C++/Scala"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 16 if the repository is build in MBS or C or C++ or Scala languages
                 echo "::set-output name=tech_stack_id::16"
                 
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to MBS/C/C++/Scala if the repository is build in MBS or C or C++ or Scala languages
                 echo "::set-output name=tech_stack::MBS/C/C++/Scala"
                 ;;
               "PHP")
                 echo "The technology Stack from the repository is PHP"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 9 if the repository is build in PHP language
                 echo "::set-output name=tech_stack_id::9"
                  
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to PHP if the repository is build in PHP language
                 echo "::set-output name=tech_stack::PHP"
                 ;;
               "Ruby")
                 echo "The technology Stack from the repository is Ruby"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 17 if the repository is build in Ruby language
                 echo "::set-output name=tech_stack_id::17"
               
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to Ruby if the repository is build in Ruby language
                 echo "::set-output name=tech_stack::Ruby"
                 ;;
               "Solidity")
                 echo "The technology Stack from the repository is Solidity"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 31 if the repository is build in Solidity language
                 echo "::set-output name=tech_stack_id::31"
               
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to Solidity if the repository is build in Solidity language
                 echo "::set-output name=tech_stack::Solidity"
                 ;;
               "Visual Basic 6.0")
                 echo "The technology Stack from the repository is Visual Basic 6.0"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 11 if the repository is build in Visual Basic 6.0 language
                 echo "::set-output name=tech_stack_id::11"
                 
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to VB6 if the repository is build in Visual Basic 6.0 language
                 echo "::set-output name=tech_stack::VB6"
                 ;;
               "VBScript")
                 echo "The technology Stack from the repository is Visual Basic Script"
                 
-                # Sets technology stack id variable related to the technology stack of the repository
+                # Sets technology stack id variable dynamically to 14 if the repository is build in Visual Basic Script language
                 echo "::set-output name=tech_stack_id::14"
               
-                # Sets technology stack variable dynamically related to the technology stack of the repository
+                # Sets technology stack variable dynamically to VBScript if the repository is build in Visual Basic Script language
                 echo "::set-output name=tech_stack::VBScript"
                 ;;
               *)
                 echo "Language not found on Fortify On Demand technology stack options"
                 
-                # Sets unknown technology stack variable dynamically to value true 
+                # Sets unknown technology stack variable dynamically to value true because the repository language is not found on Fortify On Demand options
                 echo "::set-output name=unknow_tech_stack::true"
                 ;;
             esac
@@ -398,6 +401,7 @@ jobs:
             # Checks if the API Request returns data if not it will create the application and scan it
             if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
               echo "There isn't any Application called ${Repo_Name} found in your Fortify On Demand Tenant"
+              
               # Sets boolean variable to false dynamically indicating that the FOD App not exists
               echo "::set-output name=isFODAppExists::false"
               
@@ -450,10 +454,13 @@ jobs:
               echo "API Request was successful."
               
               echo "${Repo_Name} is present in your Fortify On Demand Tenant as an Application."
+              
               # Sets boolean variable to true dynamically indicating that the FOD App exists
               echo "::set-output name=isFODAppExists::true"
+              
               # Extracts the applicationId values from the output JSON file
               APPID=$(cat "get-application-output.json" | jq -r '.items[0].applicationId')
+              
               # Sends an API Request with GET method to retrieve the information from the release related to the application from the repository and extracts the HTTP status code from the response
               Get_FOD_Release_by_AppId_Request=$(curl -X GET "${FOD_API_URL}/releases?filters=applicationId%3A${APPID}" \
                 -H "Authorization: Bearer ${FOD_API_TOKEN}" \
@@ -477,12 +484,15 @@ jobs:
                 # Extracts the totalcount and items values from the output JSON file
                 ITEMS=$(cat "get-release-output.json" | jq -r '.items')
                 TOTALCOUNT=$(cat "get-release-output.json" | jq -r '.totalCount')
+                
                 # Checks if the API Request returns data if not it will create the application and scan it
                 if [[ $ITEMS = [] ]] || [[ $TOTALCOUNT -eq 0 ]]; then
                   echo "There isn't any application related to that applicationId in your Fortify On Demand Tenant"
+                  
                   exit 1  # Exit with a non-zero status code to indicate failure
                 else
                   echo "There is an application related to that applicationId in your Fortify On Demand Tenant"
+                  
                   # Extracts the releaseid value from the output JSON file of the Application Creation Request
                   FOD_Release_ID=$(cat "get-release-output.json" | jq -r '.items[0].releaseId')
               
@@ -519,7 +529,9 @@ jobs:
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
-    if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
+    if: |
+       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
+       ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack != 'true'  }}
          
     steps:
     # Checks out the source code.
@@ -582,6 +594,7 @@ jobs:
                 
           # Saves the PUT request's status code
           Static_Scan_Options_Request_Status_Code=$(echo $Save_FOD_Application_Static_Scan_Options_Request | tr -d '\n' | sed -e 's/.*Status Code://')
+          
           # Checks if the status code of the request is 200 if not it will end the workflow with an error
           if [[ $Static_Scan_Options_Request_Status_Code -eq 200 ]]; then
             echo "API Request was successful."
@@ -649,9 +662,13 @@ jobs:
             Is_Maven=${{ needs.java_info.outputs.is_maven }}
             Builder_Name=${{ needs.java_info.outputs.builder_name }}
 
-            if [[ $Repo_Language !== "Java" ]] || [[ $Repo_Language !== "Python" ]] || [[ $Repo_Language !== "C#") ]]; then
-              echo "::set-output name=repo_java_version::8"
+            if [[ $Repo_Language != 'Java' || $Repo_Language != 'C#' || $Repo_Language != 'Python' ]]; then
+              echo "The repository language is not Java FOD SAST Scan runner will used the default Java version to run the SAST Scan"
               
+              # Saves the repository java version as the output to be used as runner for FOD SAST Scan (Default)
+              echo "::set-output name=repo_java_version::8"
+
+              # Saves the repository package build as the output to setup the ScanCentral Client package options for FOD SAST Scan (Default)
               echo "::set-output name=repo_package_build::none"
             else
               # Checks if the repository language is Java
@@ -660,17 +677,20 @@ jobs:
                   echo "Repository language is: Java"
                 
                   echo "Java version is $Java Version"
-                  
+
+                  # Saves the repository java version as the output to be used as runner for FOD SAST Scan (if language is Java)
                   echo "::set-output name=sast_scan_java_version::$Java Version"
                   
                   if [[ $Is_Gradle == 'true' || $Builder_Name == "Gradle" ]]; then
                     echo "the Java application has Gradle build"
-                
+
+                    # Saves the repository package build as the output to setup the ScanCentral Client package options for FOD SAST Scan (if build is Gradle)
                     echo "::set-output name=repo_package_build::gradle"
                     
                   elif [[ $Is_Maven == "true" || $Builder_Name == "Maven" ]]; then
                     echo "the Java application has Maven build"
-                
+
+                    # Saves the repository package build as the output to setup the ScanCentral Client package options for FOD SAST Scan (if build is Maven)
                     echo "::set-output name=repo_package_build::mvn"
                   else 
                     echo "the Java appplication has an unknown java build or has not any build at all"
@@ -680,7 +700,7 @@ jobs:
                   ;;
                 "Python")
                   echo "Repository language is: Python"
-                
+
                   echo "::set-output name=repo_java_version::8"
               
                   echo "::set-output name=repo_package_build::none"
