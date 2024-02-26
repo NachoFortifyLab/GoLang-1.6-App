@@ -739,8 +739,8 @@ jobs:
       - name: Package Code + Dependencies
         run: scancentral package $PACKAGE_OPTS -o package.zip
         env:
-          Repo_Package_Build: ${{ needs.RepoLanguagePackageChecker.outputs.repo_package_build }}
-          PACKAGE_OPTS: "-bt ${Repo_Package_Build}"
+          Repo_Package_Build: ${{ needs.RepoLanguagePackageChecker.outputs.Repo_Package_Build }}
+          PACKAGE_OPTS: "-bt $Repo_Package_Build"
 
       # Starts Fortify on Demand SAST Scan and wait until results completition. For more information on FOD Uploader commands, see https://github.com/fod-dev/fod-uploader-java
       # TODO: Update ENV variables for your application and create the necessary GitHub Secrets.  Helpful hints:
