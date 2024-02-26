@@ -724,7 +724,7 @@ jobs:
       - name: Set ups Java
         uses: actions/setup-java@v3
         with:
-          java-version: ${{ needs.RepoLanguagePackageChecker.outputs.sast_scan_java_version }} 
+          java-version: '8'
           distribution: 'temurin'
           
       # Prepares source code and dependencies to be uploaded in FOD with ScanCentral Client.
