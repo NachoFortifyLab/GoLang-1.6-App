@@ -638,9 +638,6 @@ jobs:
     runs-on: ubuntu-latest
     # Saves the data of the Java version to be used on FOD SAST Scan 
     # and the builder related to the repository language
-    outputs:
-      Sast_Scan_Java_Version: ${{ steps.RepoLanguageChecker.outputs.sast_scan_java_version }}
-      Repo_Package_Build: ${{ steps.RepoLanguageChecker.outputs.repo_package_build }}
     permissions:
       actions: read
       contents: read
@@ -741,8 +738,8 @@ jobs:
       - name: Package Code + Dependencies
         run: scancentral package $PACKAGE_OPTS -o package.zip
         env:
-          Repo_Package_Build: ${{ steps.RepoLanguagePackageChecker.outputs.repo_package_build }}
-          PACKAGE_OPTS: "-bt ${Repo_Package_Build}"
+          #Repo_Package_Build: ${{ steps.RepoLanguagePackageChecker.outputs.repo_package_build }}
+          PACKAGE_OPTS: "-bt ${{ steps.RepoLanguagePackageChecker.outputs.repo_package_build }}"
 
       # Starts Fortify on Demand SAST Scan and wait until results completition. For more information on FOD Uploader commands, see https://github.com/fod-dev/fod-uploader-java
       # TODO: Update ENV variables for your application and create the necessary GitHub Secrets.  Helpful hints:
