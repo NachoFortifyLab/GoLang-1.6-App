@@ -726,6 +726,8 @@ jobs:
         with:
           java-version: '8'
           distribution: 'temurin'
+        env:
+          Sast_Scan_Java_Version: ${{ steps.RepoLanguageChecker.outputs.sast_scan_java_version }}
           
       # Prepares source code and dependencies to be uploaded in FOD with ScanCentral Client.
       # TODO: Update PACKAGE_OPTS based on the ScanCentral Client documentation for your project's included tech stack(s). Helpful hints:
@@ -739,7 +741,7 @@ jobs:
       - name: Package Code + Dependencies
         run: scancentral package $PACKAGE_OPTS -o package.zip
         env:
-          Repo_Package_Build: ${{ needs.RepoLanguagePackageChecker.outputs.Repo_Package_Build }}
+          Repo_Package_Build: ${{ steps.RepoLanguagePackageChecker.outputs.repo_package_build }}
           PACKAGE_OPTS: "-bt $Repo_Package_Build"
 
       # Starts Fortify on Demand SAST Scan and wait until results completition. For more information on FOD Uploader commands, see https://github.com/fod-dev/fod-uploader-java
