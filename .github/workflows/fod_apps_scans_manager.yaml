@@ -529,9 +529,7 @@ jobs:
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
-    if: |
-      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
-      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} 
+    if: ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} 
          
     steps:
     # Checks out the source code.
