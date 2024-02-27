@@ -340,8 +340,6 @@ jobs:
           
           # Prints the repository name
           echo "The Repository which triggered the workflow is: ${Repo_Name}"
-
-          echo "Varible value: ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack }}"
           
           echo "Proceeding to check if an Application called ${Repo_Name} is present in your Fortify On Demand Tenant..."
           
@@ -532,8 +530,8 @@ jobs:
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
     if: |
-      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
-      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }}
+      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} &&
+      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
          
     steps:
     # Checks out the source code.
@@ -723,7 +721,7 @@ jobs:
       - name: Set ups Java
         uses: actions/setup-java@v3
         with:
-          java-version: '8'
+          java-version: '${Sast_Scan_Java_Version}'
           distribution: 'temurin'
         env:
           Sast_Scan_Java_Version: ${{ steps.RepoLanguageChecker.outputs.sast_scan_java_version }}
@@ -740,8 +738,8 @@ jobs:
       - name: Package Code + Dependencies
         run: scancentral package $PACKAGE_OPTS -o package.zip
         env:
-          #Repo_Package_Build: ${{ steps.RepoLanguagePackageChecker.outputs.repo_package_build }}
-          PACKAGE_OPTS: "-bt ${{ steps.RepoLanguagePackageChecker.outputs.repo_package_build }}"
+          Repo_Package_Build: ${{ steps.RepoLanguagePackageChecker.outputs.repo_package_build }}
+          PACKAGE_OPTS: "-bt ${Repo_Package_Build}"
 
       # Starts Fortify on Demand SAST Scan and wait until results completition. For more information on FOD Uploader commands, see https://github.com/fod-dev/fod-uploader-java
       # TODO: Update ENV variables for your application and create the necessary GitHub Secrets.  Helpful hints:
