@@ -529,7 +529,9 @@ jobs:
     needs: FOD-Application-Management
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
-    if: ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} 
+    if: |
+      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
+      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} 
          
     steps:
     # Checks out the source code.
@@ -635,6 +637,7 @@ jobs:
       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} ||
       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'true' }} &&
       ${{ needs.FOD-Application-Management.result == 'success'  }}
+      
     runs-on: ubuntu-latest
     # Saves the data of the Java version to be used on FOD SAST Scan 
     # and the builder related to the repository language
@@ -738,8 +741,8 @@ jobs:
       - name: Package Code + Dependencies
         run: scancentral package $PACKAGE_OPTS -o package.zip
         env:
-          Repo_Package_Build: ${{ steps.RepoLanguagePackageChecker.outputs.repo_package_build }}
-          PACKAGE_OPTS: "-bt ${Repo_Package_Build}"
+          #Repo_Package_Build: 
+          PACKAGE_OPTS: "-bt ${{ steps.RepoLanguagePackageChecker.outputs.repo_package_build }}"
 
       # Starts Fortify on Demand SAST Scan and wait until results completition. For more information on FOD Uploader commands, see https://github.com/fod-dev/fod-uploader-java
       # TODO: Update ENV variables for your application and create the necessary GitHub Secrets.  Helpful hints:
