@@ -526,7 +526,7 @@ jobs:
   # FOD SAST Scan Options Job
   FOD-SAST-Scan-Options:
     # Indicates that this job requieres FOD Application Management Job to be completed in order to run.
-    needs: FOD-Application-Management
+    needs: [FOD-Application-Management, Repository-Technology-Stack-Management]
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
     if: |
