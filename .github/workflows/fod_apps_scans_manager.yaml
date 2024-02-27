@@ -340,6 +340,8 @@ jobs:
           
           # Prints the repository name
           echo "The Repository which triggered the workflow is: ${Repo_Name}"
+
+          echo "Varible value: ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack }}"
           
           echo "Proceeding to check if an Application called ${Repo_Name} is present in your Fortify On Demand Tenant..."
           
