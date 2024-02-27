@@ -151,6 +151,9 @@ jobs:
             
             # Sets language level variable to null because the repository language is not a multi version language
             echo "::set-output name=language_level::null"
+
+            # Sets unknown technology stack variable dynamically to value false because the repository language is a technology stack on Fortify On Demand options
+            echo "::set-output name=unknow_tech_stack::false"
             
             # Switch between the non multi version languages and assign technology stack id and technology stack values based on the repository language
             case "$Repo_Language" in
@@ -530,8 +533,8 @@ jobs:
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
     if: |
-      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} ||
-      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack != 'false' }} 
+      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
+      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} 
          
     steps:
     # Checks out the source code.
@@ -724,7 +727,7 @@ jobs:
       - name: Set ups Java
         uses: actions/setup-java@v3
         with:
-          java-version: '${{ steps.RepoLanguageChecker.outputs.sast_scan_java_version }}'
+          java-version: '8'
           distribution: 'temurin'
         #env:
           #Sast_Scan_Java_Version: ${{ steps.RepoLanguageChecker.outputs.sast_scan_java_version }}
