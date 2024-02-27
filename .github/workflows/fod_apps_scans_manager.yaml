@@ -144,7 +144,7 @@ jobs:
           
           # Checks if the repositroy language is not Java or C# or Python
           if [[ $Repo_Language != 'Java' || $Repo_Language != 'C#' || $Repo_Language != 'Python' ]]; then
-            echo "echo the repository is not build in a multi version language"
+            echo "The repository is not build in a multi version language"
             
             # Sets language level id variable to null because the repository language is not a multi version language
             echo "::set-output name=language_level_id::null"
@@ -533,7 +533,7 @@ jobs:
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
     if: |
       ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
-      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack != 'false' }}
+      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }}
          
     steps:
     # Checks out the source code.
