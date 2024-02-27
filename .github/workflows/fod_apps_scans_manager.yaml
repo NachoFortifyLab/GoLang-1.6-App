@@ -530,8 +530,8 @@ jobs:
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
     if: |
-      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} &&
-      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
+      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
+      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} 
          
     steps:
     # Checks out the source code.
@@ -562,6 +562,8 @@ jobs:
           Language_Level=${{ needs.Repository-Technology-Stack-Management.outputs.Language_Level }}
           
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
+
+          echo "value is: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}"
           
           # Creates a JSON file to be used as body for the Set Up of the SAST Scan options 
           Save_FOD_Application_Static_Scan_Options_Body=$(cat <<-EOF
