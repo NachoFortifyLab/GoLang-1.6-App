@@ -125,7 +125,7 @@ jobs:
       Technology_Stack: ${{ steps.DefinesFODAppTechStack.outputs.tech_stack }}
       Language_Level_ID: ${{ steps.DefinesFODAppTechStack.outputs.language_level_id }}
       Language_Level: ${{ steps.DefinesFODAppTechStack.outputs.language_level }}
-      Unknown_Technology_Stack: ${{ steps.DefinesFODAppTechStack.outputs.unknow_tech_stack }}
+      #Unknown_Technology_Stack: ${{ steps.DefinesFODAppTechStack.outputs.unknow_tech_stack }}
 
     steps:
     # Checks out the source code.
@@ -137,7 +137,7 @@ jobs:
       id: DefinesFODAppTechStack
       run: |
           # Sets up your Github requiered variables for this step
-          Repo_Language=${{ needs.sadads.outputs.Repo_Language }}
+          Repo_Language=${{ needs.Get-GitHub-Repo-Information.outputs.Repo_Language }}
           Java_Version=${{ needs.Define-Java-Configuration.outputs.java_version }}
           
           echo "Repository language is: $Repo_Language"
@@ -287,7 +287,7 @@ jobs:
                 echo "Language not found on Fortify On Demand technology stack options"
                 
                 # Sets unknown technology stack variable dynamically to value true because the repository language is not found on Fortify On Demand options
-                echo "::set-output name=unknow_tech_stack::true"
+                # echo "::set-output name=unknow_tech_stack::true"
                 ;;
             esac
           else
@@ -534,9 +534,8 @@ jobs:
     needs: [FOD-Application-Management, Repository-Technology-Stack-Management]
     runs-on: ubuntu-latest
     # This job will run when the boolean variable that checks the existance of the FOD application returns false.
-    if: |
-      ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }} &&
-      ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} 
+    if: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}
+    # ${{ needs.Repository-Technology-Stack-Management.outputs.Unknown_Technology_Stack == 'false' }} 
          
     steps:
     # Checks out the source code.
