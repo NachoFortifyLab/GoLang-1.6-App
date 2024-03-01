@@ -48,6 +48,9 @@ jobs:
     - name: Gets repository information and extracts the language used in the repository
       id: RepoInfo
       run: |
+          # Repository API URL
+          REPO_API_URL: "https://api.github.com/repos/${{ github.repository }}"
+
           # Sends a request to get the repository information
           Get_Repo_Information_Request=$(curl -s $REPO_API_URL \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
