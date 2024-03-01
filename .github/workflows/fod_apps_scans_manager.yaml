@@ -48,9 +48,6 @@ jobs:
     - name: Gets repository information and extracts the language used in the repository
       id: RepoInfo
       run: |
-          # Repository API URL
-          REPO_API_URL: "https://api.github.com/repos/${{ github.repository }}"
-
           # Sends a request to get the repository information
           Get_Repo_Information_Request=$(curl -s $REPO_API_URL \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
@@ -153,7 +150,6 @@ jobs:
             
             # Sets language level variable to null because the repository language is not a multi version language
             echo "::set-output name=language_level::null"
-
             # Sets unknown technology stack variable dynamically to value false because the repository language is a technology stack on Fortify On Demand options
             echo "::set-output name=unknow_tech_stack::false"
             
@@ -462,7 +458,6 @@ jobs:
               
               # Sets boolean variable to true dynamically indicating that the FOD App exists
               echo "::set-output name=isFODAppExists::true"
-
               echo "Proceeding to get the release of the existing application ${Repo_Name} repo in your Fortify On Demand Tenant..."
               
               # Extracts the applicationId values from the output JSON file
@@ -568,7 +563,6 @@ jobs:
           Language_Level=${{ needs.Repository-Technology-Stack-Management.outputs.Language_Level }}
           
           echo "Proceeding to set up the sast scan options for your ${Repo_Name} Application in Fortify On Demand..."
-
           echo "value is: ${{ needs.FOD-Application-Management.outputs.Is_FOD_APP_Exists == 'false' }}"
           
           # Creates a JSON file to be used as body for the Set Up of the SAST Scan options 
@@ -667,13 +661,11 @@ jobs:
             Is_Gradle=${{ needs.java_info.outputs.is_gradle }}
             Is_Maven=${{ needs.java_info.outputs.is_maven }}
             Builder_Name=${{ needs.java_info.outputs.builder_name }}
-
             if [[ $Repo_Language != 'Java' || $Repo_Language != 'C#' || $Repo_Language != 'Python' ]]; then
               echo "The repository language is not Java FOD SAST Scan runner it will use the default Java version to run the SAST Scan"
               
               # Saves the repository java version as the output to be used as runner for FOD SAST Scan (Default)
               echo "::set-output name=repo_java_version::8"
-
               # Saves the repository package build as the output to setup the ScanCentral Client package options for FOD SAST Scan (Default)
               echo "::set-output name=repo_package_build::none"
             else
@@ -683,19 +675,16 @@ jobs:
                   echo "Repository language is: Java"
                 
                   echo "Java version is $Java Version"
-
                   # Saves the repository java version as the output to be used as runner for FOD SAST Scan (if language is Java)
                   echo "::set-output name=sast_scan_java_version::$Java Version"
                   
                   if [[ $Is_Gradle == 'true' || $Builder_Name == "Gradle" ]]; then
                     echo "the Java application has Gradle build"
-
                     # Saves the repository package build as the output to setup the ScanCentral Client package options for FOD SAST Scan (if build is Gradle)
                     echo "::set-output name=repo_package_build::gradle"
                     
                   elif [[ $Is_Maven == "true" || $Builder_Name == "Maven" ]]; then
                     echo "the Java application has Maven build"
-
                     # Saves the repository package build as the output to setup the ScanCentral Client package options for FOD SAST Scan (if build is Maven)
                     echo "::set-output name=repo_package_build::mvn"
                   else 
@@ -706,7 +695,6 @@ jobs:
                   ;;
                 "Python")
                   echo "Repository language is: Python"
-
                   echo "::set-output name=repo_java_version::8"
               
                   echo "::set-output name=repo_package_build::none"
